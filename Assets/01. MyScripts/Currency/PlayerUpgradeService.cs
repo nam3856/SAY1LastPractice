@@ -14,8 +14,7 @@ public class PlayerUpgradeService
 
     public bool TryUpgradeHealth(int cost, float increaseAmount)
     {
-        var currency = _currencyManager.Currencies[ECurrencyType.Gold];
-        if (!currency.TrySpend(cost))
+        if (!_currencyManager.TrySpend(ECurrencyType.Gold, cost))
         {
             Debug.Log("골드 부족");
             return false;

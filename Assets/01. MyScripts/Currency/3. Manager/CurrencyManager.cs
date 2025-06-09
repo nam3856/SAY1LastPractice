@@ -67,4 +67,14 @@ public class CurrencyManager : MonoBehaviour
         }
         return list;
     }
+
+    public bool TrySpend(ECurrencyType type, int amount)
+    {
+        var currency = _currencies[type];
+        if (!currency.TrySpend(amount))
+            return false;
+
+        CurrenciesChanged?.Invoke();
+        return true;
+    }
 }
