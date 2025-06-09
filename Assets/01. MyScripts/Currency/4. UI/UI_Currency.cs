@@ -32,10 +32,10 @@ public class UI_Currency : MonoBehaviour
             switch (dto.CurrencyType)
             {
                 case ECurrencyType.Gold:
-                    GoldCountText.text = dto.CurrencyType.ToString() + dto.Value.ToString();
+                    GoldCountText.text = $"{dto.CurrencyType.ToString()}: {dto.Value.ToString()}";
                     break;
                 case ECurrencyType.Diamond:
-                    DiamondCountText.text = dto.CurrencyType.ToString() + dto.Value.ToString();
+                    DiamondCountText.text = $"{dto.CurrencyType.ToString()}: {dto.Value.ToString()}";
                     break;
             }
         }
