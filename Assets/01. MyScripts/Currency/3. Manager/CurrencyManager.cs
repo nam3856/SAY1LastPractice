@@ -9,12 +9,14 @@ public class CurrencyManager : MonoBehaviour
 {
     public static CurrencyManager Instance { get; private set; }
     public event Action CurrenciesChanged;
+    public IReadOnlyDictionary<ECurrencyType, Currency> Currencies => _currencies;
+
     private static readonly ECurrencyType[] _currencyTypes = 
         (ECurrencyType[])Enum.GetValues(typeof(ECurrencyType));
-
     private Dictionary<ECurrencyType, Currency> _currencies = 
         new Dictionary<ECurrencyType, Currency>();
-    public IReadOnlyDictionary<ECurrencyType, Currency> Currencies => _currencies;
+    
+    private CurrencyRepository _repository;
 
     private void Awake()
     {
@@ -32,14 +34,37 @@ public class CurrencyManager : MonoBehaviour
 
     private void Init()
     {
-        // 생성
-        for (int i = 0; i < _currencyTypes.Length; i++)
-        {
-            ECurrencyType type = _currencyTypes[i];
+        // 레포지토리
+        _repository = new CurrencyRepository();
 
-            Currency currency = new Currency(type, 0);
-            _currencies.Add(type, currency);
+        // 레포지토리에서 데이터 불러오기
+        List<CurrencyDTO> loadedData = _repository.Load();
+        if (loadedData != null && loadedData.Count > 0)
+        {
+            // 로드된 데이터로 초기화
+            foreach (var dto in loadedData)
+            {
+                if (_currencies.ContainsKey(dto.CurrencyType))
+                {
+                    _currencies[dto.CurrencyType].Add(dto.Value);
+                }
+                else
+                {
+                    _currencies.Add(dto.CurrencyType, new Currency(dto.CurrencyType, dto.Value));
+                }
+            }
         }
+        else
+        {
+            for (int i = 0; i < _currencyTypes.Length; i++)
+            {
+                ECurrencyType type = _currencyTypes[i];
+
+                Currency currency = new Currency(type, 0);
+                _currencies.Add(type, currency);
+            }
+        }
+        
     }
 
     public void Add(ECurrencyType type, int amount)
@@ -47,7 +72,8 @@ public class CurrencyManager : MonoBehaviour
         _currencies[type].Add(amount);
 
         CurrenciesChanged?.Invoke(); // 이벤트 호출
-        Debug.Log($"{type} 추가: {amount}, 현재 금액: {_currencies[type].Value}");
+
+        _repository.Save(_currencies.ToDtoList()); // 레포지토리에 데이터 저장
     }
 
     public void Subtract(ECurrencyType type, int amount)
@@ -60,12 +86,7 @@ public class CurrencyManager : MonoBehaviour
 
     public List<CurrencyDTO> GetAllCurrencyDTOs()
     {
-        var list = new List<CurrencyDTO>();
-        foreach (var pair in _currencies)
-        {
-            list.Add(new CurrencyDTO(pair.Value));
-        }
-        return list;
+        return _currencies.ToDtoList();
     }
 
     public bool TrySpend(ECurrencyType type, int amount)
@@ -75,6 +96,9 @@ public class CurrencyManager : MonoBehaviour
             return false;
 
         CurrenciesChanged?.Invoke();
+
+        _repository.Save(_currencies.ToDtoList()); // 레포지토리에 데이터 저장
+
         return true;
     }
 }
