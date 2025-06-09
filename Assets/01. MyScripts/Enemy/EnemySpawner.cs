@@ -1,17 +1,20 @@
+using Redcode.Pools;
 using Unity.FPS.AI;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject EnemyPrefab;
+    public EnemyController EnemyPrefab;
     public int MaxEnemies = 10;
     public float SpawnInterval = 3f;
     private float _spawnTimer = 0f;
     private int _enemyCount = 0;
-    private EnemyManager _enemyManager;
+    private Pool<EnemyController> _enemyPool;
+    public PatrolPath AssignedPath;
     private void Start()
     {
         EnemyController.OnEnemyDied += OnEnemyDied;
+        _enemyPool = Pool.Create(EnemyPrefab, MaxEnemies, transform).NonLazy();
     }
 
     private void OnDestroy()
@@ -30,9 +33,16 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy()
     {
-        if (_enemyCount < MaxEnemies)
+        if (_enemyCount >= MaxEnemies)
+            return;
+
+        var enemy = _enemyPool.Get();
+        if (enemy != null)
         {
-            var enemy = Instantiate(EnemyPrefab, transform.position, Quaternion.identity);
+            enemy.transform.position = transform.position;
+            enemy.transform.rotation = Quaternion.identity;
+            enemy.PatrolPath = AssignedPath;
+            enemy.SetPool(_enemyPool);
             _enemyCount++;
         }
     }

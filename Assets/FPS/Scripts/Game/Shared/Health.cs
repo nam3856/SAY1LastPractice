@@ -23,9 +23,10 @@ namespace Unity.FPS.Game
 
         bool m_IsDead;
 
-        void Start()
+        void OnEnable()
         {
             CurrentHealth = MaxHealth;
+            m_IsDead = false;
         }
 
         public void Heal(float healAmount)

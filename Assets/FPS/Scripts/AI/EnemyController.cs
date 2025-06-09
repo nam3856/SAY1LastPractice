@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Redcode.Pools;
+using System;
 using System.Collections.Generic;
 using Unity.FPS.Game;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.Events;
 namespace Unity.FPS.AI
 {
     [RequireComponent(typeof(Health), typeof(Actor), typeof(NavMeshAgent))]
-    public class EnemyController : MonoBehaviour
+    public class EnemyController : MonoBehaviour, IPoolObject
     {
         [System.Serializable]
         public struct RendererIndexData
@@ -119,59 +120,97 @@ namespace Unity.FPS.AI
         WeaponController[] m_Weapons;
         NavigationModule m_NavigationModule;
 
-        void Start()
+        private Pool<EnemyController> _myPool;
+        public void SetPool(Pool<EnemyController> pool)
         {
-            m_EnemyManager = FindFirstObjectByType<EnemyManager>();
-            DebugUtility.HandleErrorIfNullFindObject<EnemyManager, EnemyController>(m_EnemyManager, this);
+            _myPool = pool;
+        }
+        public void OnCreatedInPool()
+        {
+            // 최초 Pool 생성 시 1회 호출
+        }
 
-            m_ActorsManager = FindFirstObjectByType<ActorsManager>();
-            DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
 
+        public void OnReturnedToPool()
+        {
+
+            DetectionModule.onDetectedTarget -= OnDetectedTarget;
+            DetectionModule.onLostTarget -= OnLostTarget;
+            onAttack -= DetectionModule.OnAttack;
+            m_Health.OnDie -= OnDie;
+            m_Health.OnDamaged -= OnDamaged;
+        }
+
+        public void OnDestroyFromPool()
+        {
+            // 완전히 제거될 때 (필요시)
+        }
+        public void OnGettingFromPool()
+        {
+            if (m_ActorsManager == null)
+            {
+                m_ActorsManager = FindFirstObjectByType<ActorsManager>();
+                DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
+            }
+            if (m_Actor == null)
+            {
+                m_Actor = GetComponent<Actor>();
+                DebugUtility.HandleErrorIfNullGetComponent<Actor, EnemyController>(m_Actor, this, gameObject);
+            }
+            if(m_GameFlowManager == null)
+            {
+                m_GameFlowManager = FindFirstObjectByType<GameFlowManager>();
+                DebugUtility.HandleErrorIfNullFindObject<GameFlowManager, EnemyController>(m_GameFlowManager, this);
+            }
+
+            if(m_EnemyManager == null)
+            {
+                m_EnemyManager = FindFirstObjectByType<EnemyManager>();
+                DebugUtility.HandleErrorIfNullFindObject<EnemyManager, EnemyController>(m_EnemyManager, this);
+            }
             m_EnemyManager.RegisterEnemy(this);
+            if (m_Health == null)
+            {
+                m_Health = GetComponent<Health>();
+                DebugUtility.HandleErrorIfNullGetComponent<Health, EnemyController>(m_Health, this, gameObject);
+            }
+            if(NavMeshAgent == null)
+            {
+                NavMeshAgent = GetComponent<NavMeshAgent>();
+                m_SelfColliders = GetComponentsInChildren<Collider>();
+            }
+            NavMeshAgent.enabled = true;
+            NavMeshAgent.ResetPath();
+            NavMeshAgent.velocity = Vector3.zero;
 
-            m_Health = GetComponent<Health>();
-            DebugUtility.HandleErrorIfNullGetComponent<Health, EnemyController>(m_Health, this, gameObject);
+            if(DetectionModule == null)
+            {
+                var detectionModules = GetComponentsInChildren<DetectionModule>();
+                DebugUtility.HandleErrorIfNoComponentFound<DetectionModule, EnemyController>(detectionModules.Length, this,
+                    gameObject);
+                DebugUtility.HandleWarningIfDuplicateObjects<DetectionModule, EnemyController>(detectionModules.Length,
+                    this, gameObject);
+                // Initialize detection module
+                DetectionModule = detectionModules[0];
 
-            m_Actor = GetComponent<Actor>();
-            DebugUtility.HandleErrorIfNullGetComponent<Actor, EnemyController>(m_Actor, this, gameObject);
+                var navigationModules = GetComponentsInChildren<NavigationModule>();
+                DebugUtility.HandleWarningIfDuplicateObjects<DetectionModule, EnemyController>(detectionModules.Length,
+                    this, gameObject);
+                // Override navmesh agent data
+                if (navigationModules.Length > 0)
+                {
+                    m_NavigationModule = navigationModules[0];
+                    NavMeshAgent.speed = m_NavigationModule.MoveSpeed;
+                    NavMeshAgent.angularSpeed = m_NavigationModule.AngularSpeed;
+                    NavMeshAgent.acceleration = m_NavigationModule.Acceleration;
+                }
+            }
 
-            NavMeshAgent = GetComponent<NavMeshAgent>();
-            m_SelfColliders = GetComponentsInChildren<Collider>();
-
-            m_GameFlowManager = FindFirstObjectByType<GameFlowManager>();
-            DebugUtility.HandleErrorIfNullFindObject<GameFlowManager, EnemyController>(m_GameFlowManager, this);
-
-            // Subscribe to damage & death actions
-            m_Health.OnDie += OnDie;
-            m_Health.OnDamaged += OnDamaged;
-
-            // Find and initialize all weapons
-            FindAndInitializeAllWeapons();
-            var weapon = GetCurrentWeapon();
-            weapon.ShowWeapon(true);
-
-            var detectionModules = GetComponentsInChildren<DetectionModule>();
-            DebugUtility.HandleErrorIfNoComponentFound<DetectionModule, EnemyController>(detectionModules.Length, this,
-                gameObject);
-            DebugUtility.HandleWarningIfDuplicateObjects<DetectionModule, EnemyController>(detectionModules.Length,
-                this, gameObject);
-            // Initialize detection module
-            DetectionModule = detectionModules[0];
             DetectionModule.onDetectedTarget += OnDetectedTarget;
             DetectionModule.onLostTarget += OnLostTarget;
             onAttack += DetectionModule.OnAttack;
-
-            var navigationModules = GetComponentsInChildren<NavigationModule>();
-            DebugUtility.HandleWarningIfDuplicateObjects<DetectionModule, EnemyController>(detectionModules.Length,
-                this, gameObject);
-            // Override navmesh agent data
-            if (navigationModules.Length > 0)
-            {
-                m_NavigationModule = navigationModules[0];
-                NavMeshAgent.speed = m_NavigationModule.MoveSpeed;
-                NavMeshAgent.angularSpeed = m_NavigationModule.AngularSpeed;
-                NavMeshAgent.acceleration = m_NavigationModule.Acceleration;
-            }
+            DetectionModule.OnLostTarget();
+            m_LastTimeDamaged = float.NegativeInfinity;
 
             foreach (var renderer in GetComponentsInChildren<Renderer>(true))
             {
@@ -189,7 +228,10 @@ namespace Unity.FPS.AI
                 }
             }
 
-            m_BodyFlashMaterialPropertyBlock = new MaterialPropertyBlock();
+            if (m_BodyFlashMaterialPropertyBlock == null)
+            {
+                m_BodyFlashMaterialPropertyBlock = new MaterialPropertyBlock();
+            }
 
             // Check if we have an eye renderer for this enemy
             if (m_EyeRendererData.Renderer != null)
@@ -199,12 +241,27 @@ namespace Unity.FPS.AI
                 m_EyeRendererData.Renderer.SetPropertyBlock(m_EyeColorMaterialPropertyBlock,
                     m_EyeRendererData.MaterialIndex);
             }
+
+            // Subscribe to damage & death actions
+            m_Health.OnDie += OnDie;
+            m_Health.OnDamaged += OnDamaged;
+
+            // Find and initialize all weapons
+            FindAndInitializeAllWeapons();
+            var weapon = GetCurrentWeapon();
+            weapon.ShowWeapon(true);
         }
 
         void Update()
         {
+            if(gameObject.activeInHierarchy == false)
+                return;
+            if(DetectionModule == null)
+            {
+                return;
+            }
             EnsureIsWithinLevelBounds();
-
+            
             DetectionModule.HandleTargetDetection(m_Actor, m_SelfColliders);
 
             Color currentColor = OnHitBodyGradient.Evaluate((Time.time - m_LastTimeDamaged) / FlashOnHitDuration);
@@ -222,7 +279,7 @@ namespace Unity.FPS.AI
             // at every frame, this tests for conditions to kill the enemy
             if (transform.position.y < SelfDestructYHeight)
             {
-                Destroy(gameObject);
+                _myPool.Take(this);
                 return;
             }
         }
@@ -360,22 +417,19 @@ namespace Unity.FPS.AI
 
         void OnDie()
         {
-            // spawn a particle system when dying
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
             Destroy(vfx, 5f);
 
-            // tells the game flow manager to handle the enemy destuction
             m_EnemyManager.UnregisterEnemy(this);
 
-            // loot an object
             if (TryDropItem())
-            {
                 Instantiate(LootPrefab, transform.position, Quaternion.identity);
-            }
+
             OnEnemyDied?.Invoke();
-            CurrencyManager.Instance?.Add(ECurrencyType.Gold,100);
-            // this will call the OnDestroy function
-            Destroy(gameObject, DeathDuration);
+            CurrencyManager.Instance?.Add(ECurrencyType.Gold, 100);
+
+            // Destroy 대신 풀로 반환
+            _myPool.Take(this);
         }
 
         void OnDrawGizmosSelected()

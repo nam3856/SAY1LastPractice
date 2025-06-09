@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.FPS.Game;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace Unity.FPS.AI
 {
     public class EnemyManager : MonoBehaviour
     {
-        public List<EnemyController> Enemies { get; private set; }
+        public List<EnemyController> Enemies;
         public int NumberOfEnemiesTotal { get; private set; }
         public int NumberOfEnemiesRemaining => Enemies.Count;
 
