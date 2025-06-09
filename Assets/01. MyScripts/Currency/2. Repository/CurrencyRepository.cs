@@ -10,35 +10,52 @@ using System.Runtime.CompilerServices;
 public class CurrencyRepository
 {
     private const string SAVE_KEY = nameof(CurrencyRepository);
+
     public void Save(List<CurrencyDTO> dtos)
     {
-        CurrencySaveData saveData = new CurrencySaveData
+        // 변환
+        var saveModels = new List<CurrencySaveModel>();
+        foreach (var dto in dtos)
         {
-            DataList = dtos
-        };
+            saveModels.Add(new CurrencySaveModel
+            {
+                CurrencyType = dto.CurrencyType,
+                Value = dto.Value
+            });
+        }
+
+        var saveData = new CurrencySaveData { DataList = saveModels };
         string json = JsonUtility.ToJson(saveData, true);
         PlayerPrefs.SetString(SAVE_KEY, json);
     }
-    public List<CurrencyDTO> Load() 
+
+    public List<CurrencyDTO> Load()
     {
-        if(!PlayerPrefs.HasKey(SAVE_KEY))
-        {
-            Debug.LogWarning("No saved data found for CurrencyRepository.");
+        if (!PlayerPrefs.HasKey(SAVE_KEY))
             return null;
-        }
+
         string json = PlayerPrefs.GetString(SAVE_KEY);
-        CurrencySaveData saveData = JsonUtility.FromJson<CurrencySaveData>(json);
-        if (saveData == null || saveData.DataList == null)
-        {
-            Debug.LogWarning("Failed to load Currency data.");
+        var saveData = JsonUtility.FromJson<CurrencySaveData>(json);
+        if (saveData?.DataList == null)
             return null;
+
+        var dtos = new List<CurrencyDTO>();
+        foreach (var model in saveData.DataList)
+        {
+            dtos.Add(new CurrencyDTO(model.CurrencyType, model.Value));
         }
 
-        return saveData.DataList;
+        return dtos;
     }
+}
+[System.Serializable]
+public struct CurrencySaveModel
+{
+    public ECurrencyType CurrencyType;
+    public int Value;
 }
 [System.Serializable]
 public class CurrencySaveData
 {
-    public List<CurrencyDTO> DataList;
+    public List<CurrencySaveModel> DataList;
 }
