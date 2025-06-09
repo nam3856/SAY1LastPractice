@@ -6,6 +6,7 @@ public class UI_Currency : MonoBehaviour
 {
     public TextMeshProUGUI GoldCountText;
     public TextMeshProUGUI DiamondCountText;
+    public TextMeshProUGUI HealthUpgradeText;
     
 
     private void Start()
@@ -38,6 +39,19 @@ public class UI_Currency : MonoBehaviour
                     DiamondCountText.text = $"{dto.CurrencyType.ToString()}: {dto.Value.ToString()}";
                     break;
             }
+        }
+
+        var goldDto = dtoList.Find(dto => dto.CurrencyType == ECurrencyType.Gold);
+
+        if (goldDto != null && goldDto.HaveEnough(500))
+        {
+            HealthUpgradeText.text = "Buy Health (500)";
+            HealthUpgradeText.color = Color.green;
+        }
+        else
+        {
+            HealthUpgradeText.text = "Can't Buy Health (500)";
+            HealthUpgradeText.color = Color.red;
         }
     }
 }

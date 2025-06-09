@@ -12,4 +12,9 @@ public class CurrencyDTO
         CurrencyType = currency.Type;
         Value = currency.Value;
     }
+
+    public bool HaveEnough(int amount)
+    {
+        return Value >= amount;
+    }
 }
