@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.FPS.Game;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,7 +22,7 @@ namespace Unity.FPS.AI
                 MaterialIndex = index;
             }
         }
-
+        public static event Action OnEnemyDied;
         [Header("Parameters")]
         [Tooltip("The Y height at which the enemy will be automatically killed (if it falls off of the level)")]
         public float SelfDestructYHeight = -20f;
@@ -371,7 +372,7 @@ namespace Unity.FPS.AI
             {
                 Instantiate(LootPrefab, transform.position, Quaternion.identity);
             }
-
+            OnEnemyDied?.Invoke();
             // this will call the OnDestroy function
             Destroy(gameObject, DeathDuration);
         }
@@ -438,7 +439,7 @@ namespace Unity.FPS.AI
             else if (DropRate == 1)
                 return true;
             else
-                return (Random.value <= DropRate);
+                return (UnityEngine.Random.value <= DropRate);
         }
 
         void FindAndInitializeAllWeapons()
