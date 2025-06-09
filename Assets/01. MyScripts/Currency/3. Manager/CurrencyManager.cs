@@ -57,4 +57,14 @@ public class CurrencyManager : MonoBehaviour
         CurrenciesChanged?.Invoke(); // 이벤트 호출
         Debug.Log($"{type} 차감: {amount}, 현재 금액: {_currencies[type].Value}");
     }
+
+    public List<CurrencyDTO> GetAllCurrencyDTOs()
+    {
+        var list = new List<CurrencyDTO>();
+        foreach (var pair in _currencies)
+        {
+            list.Add(new CurrencyDTO(pair.Value));
+        }
+        return list;
+    }
 }
