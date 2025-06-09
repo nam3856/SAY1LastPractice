@@ -61,4 +61,13 @@ public class Currency
     {
         return $"{_type}: {_value}";
     }
+
+    public bool TrySpend(int amount)
+    {
+        if (_value < amount)
+            return false;
+
+        _value -= amount;
+        return true;
+    }
 }
