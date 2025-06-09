@@ -1,10 +1,12 @@
 ﻿using TMPro;
+using Unity.FPS.Game;
 using UnityEngine;
 
 public class UI_Currency : MonoBehaviour
 {
     public TextMeshProUGUI GoldCountText;
     public TextMeshProUGUI DiamondCountText;
+    
 
     private void Start()
     {
