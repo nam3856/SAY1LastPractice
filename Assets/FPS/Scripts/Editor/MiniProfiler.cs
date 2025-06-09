@@ -296,7 +296,7 @@ namespace Unity.FPS.EditorExt
             s_CellDatas.Clear();
             List<BoundsAndCount> meshBoundsAndCount = new List<BoundsAndCount>();
             Bounds levelBounds = new Bounds();
-            Renderer[] allRenderers = GameObject.FindObjectsOfType<Renderer>();
+            Renderer[] allRenderers = FindObjectsByType<Renderer>(FindObjectsSortMode.None);
 
             // Get level bounds and list of bounds & polycount
             for (int i = 0; i < allRenderers.Length; i++)

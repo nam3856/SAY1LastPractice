@@ -25,7 +25,7 @@ namespace Unity.Tutorials
             {
                 navMeshSurface = GameObject.FindFirstObjectByType<NavMeshSurface>();
             }
-            UnityEditor.AI.NavMeshBuilder.ClearAllNavMeshes();
+            //UnityEditor.AI.NavMeshBuilder.ClearAllNavMeshes();
             navMeshSurface.navMeshData = null;
         }
 
@@ -68,7 +68,7 @@ namespace Unity.Tutorials
 
         public void StartTutorial(Tutorial tutorial)
         {
-            TutorialManager.Instance.StartTutorial(tutorial);
+            TutorialWindowUtils.StartTutorial(tutorial);
         }
     }
 }
