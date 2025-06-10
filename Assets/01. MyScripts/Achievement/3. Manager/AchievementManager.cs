@@ -79,6 +79,10 @@ public class AchievementManager : MonoBehaviour
             _achievements.Add(a);
         }
 
+        // 골드 관련 진행도 저장된 값으로 초기화
+        var goldAchievement = _achievements.Find(a => a.Condition == EAchievementCondition.GoldCollect);
+        _lastGoldValue = goldAchievement?.CurrentValue ?? 0;
+
         OnInitialized?.Invoke(GetAllAchievementDTOs());
     }
 

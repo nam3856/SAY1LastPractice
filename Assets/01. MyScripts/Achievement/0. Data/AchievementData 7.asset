@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a649e3c690f68ca459aa7714d364783f, type: 3}
-  m_Name: AchievementData 6
+  m_Name: AchievementData 7
   m_EditorClassIdentifier: 
   _id: ACH_HIDDEN_001
   _name: "\uB208\uC370\uBBF8"
