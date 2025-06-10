@@ -12,9 +12,9 @@ public class UI_Currency : MonoBehaviour
     private void Start()
     {
         // 초기화
-        Refresh();
+        Initalize();
         // 이벤트 구독
-        CurrencyManager.Instance.CurrenciesChanged += Refresh;
+        GameManager.Instance.Events.Currency.OnCurrencyChanged += OnCurrencyChanged;
     }
 
     private void OnDestroy()
@@ -22,10 +22,39 @@ public class UI_Currency : MonoBehaviour
         // 이벤트 구독 해제
         if (CurrencyManager.Instance != null)
         {
-            CurrencyManager.Instance.CurrenciesChanged -= Refresh;
+            GameManager.Instance.Events.Currency.OnCurrencyChanged -= OnCurrencyChanged;
         }
     }
-    private void Refresh()
+
+    private void OnCurrencyChanged(CurrencyChangedEventArgs args)
+    {
+        switch (args.CurrencyType)
+        {
+            case ECurrencyType.Gold:
+                GoldCountText.text = $"Gold: {args.NewValue}";
+                break;
+            case ECurrencyType.Diamond:
+                DiamondCountText.text = $"Diamond: {args.NewValue}";
+                break;
+        }
+        UpdateHealthBuyText();
+    }
+
+    private void UpdateHealthBuyText()
+    {
+        int gold = CurrencyManager.Instance.Currencies[ECurrencyType.Gold].Value;
+        if (gold >= 500)
+        {
+            HealthUpgradeText.text = "Buy Health (500)";
+            HealthUpgradeText.color = Color.green;
+        }
+        else
+        {
+            HealthUpgradeText.text = "Can't Buy Health (500)";
+            HealthUpgradeText.color = Color.red;
+        }
+    }
+    private void Initalize()
     {
         var dtoList = CurrencyManager.Instance.GetAllCurrencyDTOs();
         foreach (var dto in dtoList)

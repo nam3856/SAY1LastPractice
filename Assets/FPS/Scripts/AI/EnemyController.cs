@@ -427,7 +427,7 @@ namespace Unity.FPS.AI
 
             OnEnemyDied?.Invoke();
             CurrencyManager.Instance?.Add(ECurrencyType.Gold, 100);
-
+            AchievementManager.Instance?.Increase(EAchievementCondition.DroneKillCount, 1);
             // Destroy 대신 풀로 반환
             _myPool.Take(this);
         }

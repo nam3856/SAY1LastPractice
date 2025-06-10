@@ -33,6 +33,8 @@ namespace Unity.FPS.UI
         Health m_PlayerHealth;
         FramerateCounter m_FramerateCounter;
 
+        public GameObject AchievementUI;
+
         void Start()
         {
             m_PlayerInputsHandler = FindFirstObjectByType<PlayerInputHandler>();
@@ -106,7 +108,7 @@ namespace Unity.FPS.UI
         void SetPauseMenuActivation(bool active)
         {
             MenuRoot.SetActive(active);
-
+            AchievementUI.GetComponent<CanvasGroup>().alpha = active ? 1f : 0f;
             if (MenuRoot.activeSelf)
             {
                 Cursor.lockState = CursorLockMode.None;

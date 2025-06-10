@@ -8,7 +8,6 @@ using UnityEngine;
 public class CurrencyManager : MonoBehaviour
 {
     public static CurrencyManager Instance { get; private set; }
-    public event Action CurrenciesChanged;
     public IReadOnlyDictionary<ECurrencyType, Currency> Currencies => _currencies;
 
     private static readonly ECurrencyType[] _currencyTypes = 
@@ -16,7 +15,6 @@ public class CurrencyManager : MonoBehaviour
     private Dictionary<ECurrencyType, Currency> _currencies = 
         new Dictionary<ECurrencyType, Currency>();
     
-    private CurrencyRepository _repository;
 
     private void Awake()
     {
@@ -29,16 +27,27 @@ public class CurrencyManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        Init();
     }
 
-    private void Init()
+    private void Start()
     {
-        // 레포지토리
-        _repository = new CurrencyRepository();
+        GameManager.Instance.Events.Achievement.OnAchievementClaimed += OnAchievementClaimed;
+    }
 
-        // 레포지토리에서 데이터 불러오기
-        List<CurrencyDTO> loadedData = _repository.Load();
+    private void OnDestroy()
+    {
+        GameManager.Instance.Events.Achievement.OnAchievementClaimed -= OnAchievementClaimed;
+    }
+
+    private void OnAchievementClaimed(AchievementDTO achievement)
+    {
+        Add(achievement.RewardCurrencyType, achievement.RewardCurrencyAmount);
+        Debug.Log($"보상 지급 완료: {achievement.RewardCurrencyType} {achievement.RewardCurrencyAmount}");
+    }
+
+    public void Initialize(List<CurrencyDTO> loadedData)
+    {
+        _currencies.Clear();
         if (loadedData != null && loadedData.Count > 0)
         {
             // 로드된 데이터로 초기화
@@ -71,18 +80,18 @@ public class CurrencyManager : MonoBehaviour
     {
         _currencies[type].Add(amount);
 
-        CurrenciesChanged?.Invoke(); // 이벤트 호출
+        GameManager.Instance.Events.Currency.RaiseCurrencyChanged(type, _currencies[type].Value);
 
-        _repository.Save(_currencies.ToDtoList()); // 레포지토리에 데이터 저장
+        GameManager.Instance.SaveRequested(); 
     }
 
-    public void Subtract(ECurrencyType type, int amount)
-    {
-        _currencies[type].Subtract(amount);
+    //public void Subtract(ECurrencyType type, int amount)
+    //{
+    //    _currencies[type].Subtract(amount);
 
-        CurrenciesChanged?.Invoke(); // 이벤트 호출
-        Debug.Log($"{type} 차감: {amount}, 현재 금액: {_currencies[type].Value}");
-    }
+    //    GameManager.Instance.Events.Currency.RaiseCurrencyChanged(type, _currencies[type].Value);
+    //    Debug.Log($"{type} 차감: {amount}, 현재 금액: {_currencies[type].Value}");
+    //}
 
     public List<CurrencyDTO> GetAllCurrencyDTOs()
     {
@@ -95,9 +104,8 @@ public class CurrencyManager : MonoBehaviour
         if (!currency.TrySpend(amount))
             return false;
 
-        CurrenciesChanged?.Invoke();
-
-        _repository.Save(_currencies.ToDtoList()); // 레포지토리에 데이터 저장
+        GameManager.Instance.Events.Currency.RaiseCurrencyChanged(type, _currencies[type].Value);
+        GameManager.Instance.SaveRequested(); 
 
         return true;
     }
