@@ -11,6 +11,6 @@ public class Main : MonoBehaviour
         Currency diamond = new Currency(ECurrencyType.Diamond, 50);
 
         Debug.Log($"Initial {gold.ToString()}, {diamond.ToString()}");
-
+        
     }
 }

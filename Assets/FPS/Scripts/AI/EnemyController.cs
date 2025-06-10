@@ -121,6 +121,22 @@ namespace Unity.FPS.AI
         NavigationModule m_NavigationModule;
 
         private Pool<EnemyController> _myPool;
+
+        [Header("Enemy Info")] public EEnemyType EnemyType = EEnemyType.Normal;
+        [Tooltip("Gold rewarded when this enemy dies")]
+        public int GoldReward = 100;
+        [Tooltip("Achievement progress increased on death")]
+        public EAchievementCondition KillCondition = EAchievementCondition.DroneKillCount;
+
+        bool _initialized;
+
+        void Awake()
+        {
+            if (!_initialized && EnemyType == EEnemyType.Boss)
+            {
+                OnGettingFromPool();
+            }
+        }
         public void SetPool(Pool<EnemyController> pool)
         {
             _myPool = pool;
@@ -133,12 +149,12 @@ namespace Unity.FPS.AI
 
         public void OnReturnedToPool()
         {
-
             DetectionModule.onDetectedTarget -= OnDetectedTarget;
             DetectionModule.onLostTarget -= OnLostTarget;
             onAttack -= DetectionModule.OnAttack;
             m_Health.OnDie -= OnDie;
             m_Health.OnDamaged -= OnDamaged;
+            _initialized = false;
         }
 
         public void OnDestroyFromPool()
@@ -147,6 +163,9 @@ namespace Unity.FPS.AI
         }
         public void OnGettingFromPool()
         {
+            if (_initialized)
+                return;
+            _initialized = true;
             if (m_ActorsManager == null)
             {
                 m_ActorsManager = FindFirstObjectByType<ActorsManager>();
@@ -279,14 +298,17 @@ namespace Unity.FPS.AI
             // at every frame, this tests for conditions to kill the enemy
             if (transform.position.y < SelfDestructYHeight)
             {
-                _myPool.Take(this);
+                if (_myPool != null)
+                    _myPool.Take(this);
+                else
+                    Destroy(gameObject);
                 return;
             }
         }
 
         void OnLostTarget()
         {
-            onLostTarget.Invoke();
+            onLostTarget?.Invoke();
 
             // Set the eye attack color and property block if the eye renderer is set
             if (m_EyeRendererData.Renderer != null)
@@ -421,15 +443,17 @@ namespace Unity.FPS.AI
             Destroy(vfx, 5f);
 
             m_EnemyManager.UnregisterEnemy(this);
-
             if (TryDropItem())
                 Instantiate(LootPrefab, transform.position, Quaternion.identity);
 
             OnEnemyDied?.Invoke();
-            CurrencyManager.Instance?.Add(ECurrencyType.Gold, 100);
-            AchievementManager.Instance?.Increase(EAchievementCondition.DroneKillCount, 1);
-            // Destroy 대신 풀로 반환
-            _myPool.Take(this);
+            CurrencyManager.Instance?.Add(ECurrencyType.Gold, GoldReward);
+            AchievementManager.Instance?.Increase(KillCondition, 1);
+            // Destroy 대신 풀로 반환 또는 제거
+            if (_myPool != null)
+                _myPool.Take(this);
+            else
+                Destroy(gameObject);
         }
 
         void OnDrawGizmosSelected()
