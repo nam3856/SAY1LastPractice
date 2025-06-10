@@ -58,6 +58,7 @@ public class Achievement
         _currentValue = saved.CurrentValue;
         _rewarded = saved.Rewarded;
         ClaimedDate = saved.ClaimedDate;
+        IsUnlocked = saved.IsUnlocked;
     }
 
 
