@@ -14,15 +14,35 @@ public class AchievementUIController : MonoBehaviour
         AchievementManager.OnInitialized += OnAchievementInitialized;
     }
 
+    private void Start()
+    {
+        GameManager.Instance.Events.Achievement.OnAchievementUpdated += Refresh;
+        GameManager.Instance.Events.Achievement.OnAchievementUnlocked += Refresh;
+    }
     private void OnDestroy()
     {
         AchievementManager.OnInitialized -= OnAchievementInitialized;
+
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.Events.Achievement.OnAchievementUpdated -= Refresh;
+            GameManager.Instance.Events.Achievement.OnAchievementUnlocked -= Refresh;
+        }
     }
 
     private void OnAchievementInitialized(List<AchievementDTO> achievements)
     {
         BuildSlots(achievements);
+
+        canvasGroup.alpha = 0f;
     }
+
+    private void Refresh(AchievementDTO achievement)
+    {
+        var achievements = AchievementManager.Instance.GetAllAchievementDTOs();
+        BuildSlots(achievements);
+    }
+
     public void BuildSlots(List<AchievementDTO> achievements)
     {
         if (scroll == null)
@@ -37,6 +57,5 @@ public class AchievementUIController : MonoBehaviour
             var data = new AchievementScrollData(dto);
             scroll.InsertData(data);
         }
-        canvasGroup.alpha = 0f;
     }
 }
