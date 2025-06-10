@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Gpm.Ui;
 
 public class AchievementSlotUI : MonoBehaviour
 {
@@ -35,9 +36,17 @@ public class AchievementSlotUI : MonoBehaviour
         }
     }
 
-    public void SetData(AchievementDTO achievement)
+    public void SetData(AchievementDTO achievement = null)
     {
-        _achievement = achievement;
+        if(achievement != null)
+        {
+            _achievement = achievement;
+        }
+        if(_achievement == null)
+        {
+            Debug.LogError("AchievementSlotUI: Achievement data is null.");
+            return;
+        }
         _titleText.text = achievement.Name;
         _descText.text = achievement.Description;
         _claimButton.gameObject.SetActive(!achievement.Rewarded);

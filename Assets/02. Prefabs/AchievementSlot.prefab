@@ -827,6 +827,7 @@ GameObject:
   - component: {fileID: 1194890190764020068}
   - component: {fileID: 5102227349815878795}
   - component: {fileID: 8805558085926532895}
+  - component: {fileID: 5457428815915820613}
   m_Layer: 5
   m_Name: AchievementSlot
   m_TagString: Untagged
@@ -936,6 +937,19 @@ MonoBehaviour:
   _progressSlider: {fileID: 4740868945228127765}
   _claimButton: {fileID: 1796250964782013400}
   _claimedDateText: {fileID: 2038010158537829688}
+--- !u!114 &5457428815915820613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969033183402429715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7076c13bba6708469b28c4f9fc6e4e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoApplySize: 1
 --- !u!1 &6192946590772028023
 GameObject:
   m_ObjectHideFlags: 0

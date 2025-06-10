@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Gpm.Ui;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AchievementUIController : MonoBehaviour
@@ -6,6 +7,7 @@ public class AchievementUIController : MonoBehaviour
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private Transform _slotParent;
     [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private InfiniteScroll scroll;
 
     private void Awake()
     {
@@ -23,13 +25,17 @@ public class AchievementUIController : MonoBehaviour
     }
     public void BuildSlots(List<AchievementDTO> achievements)
     {
-        foreach (Transform child in _slotParent)
-            Destroy(child.gameObject);
-
-        foreach (var achievement in achievements)
+        if (scroll == null)
         {
-            GameObject go = Instantiate(_slotPrefab, _slotParent);
-            go.GetComponent<AchievementSlotUI>().SetData(achievement);
+            Debug.LogError("InfiniteScroll 컴포넌트가 할당되지 않았습니다.");
+            return;
+        }
+        scroll.ClearData(); // 기존 데이터 초기화
+
+        foreach (var dto in achievements)
+        {
+            var data = new AchievementScrollData(dto);
+            scroll.InsertData(data);
         }
         canvasGroup.alpha = 0f;
     }
