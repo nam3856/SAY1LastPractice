@@ -14,6 +14,7 @@ public class AchievementDTO
     public readonly ECurrencyType RewardCurrencyType;
     public readonly int RewardCurrencyAmount;
     public readonly DateTime ClaimedDate;
+    public readonly bool IsUnlocked;
 
 
     public AchievementDTO(Achievement achievement)
@@ -30,6 +31,7 @@ public class AchievementDTO
         RewardCurrencyType = achievement.RewardCurrencyType;
         RewardCurrencyAmount = achievement.RewardCurrencyAmount;
         ClaimedDate = achievement.ClaimedDate;
+        IsUnlocked = achievement.IsUnlocked;
     }
 
     public AchievementDTO(AchievementSaveModel achievement)
@@ -46,6 +48,7 @@ public class AchievementDTO
         RewardCurrencyType = achievement.RewardCurrencyType;
         RewardCurrencyAmount = achievement.RewardCurrencyAmount;
         ClaimedDate = string.IsNullOrEmpty(achievement.ClaimedDate) ? DateTime.MinValue : DateTime.Parse(achievement.ClaimedDate);
+        IsUnlocked = achievement.IsUnlocked;
     }
 
     public AchievementSaveModel ToSaveModel()
@@ -61,7 +64,8 @@ public class AchievementDTO
             Rewarded = Rewarded,
             RewardCurrencyType = RewardCurrencyType,
             RewardCurrencyAmount = RewardCurrencyAmount,
-            ClaimedDate = ClaimedDate.ToString("o")
+            ClaimedDate = ClaimedDate.ToString("o"),
+            IsUnlocked = IsUnlocked
         };
     }
 }

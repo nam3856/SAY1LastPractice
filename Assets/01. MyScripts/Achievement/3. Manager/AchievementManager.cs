@@ -100,7 +100,11 @@ public class AchievementManager : MonoBehaviour
                 //업적 완료 확인
                 if (achievement.CanClaimReward())
                 {
-                    GameManager.Instance.Events.Achievement.RaiseAchievementUnlocked(new AchievementDTO(achievement));
+                    if(achievement.IsUnlocked == false)
+                    {
+                        achievement.IsUnlocked = true; 
+                        GameManager.Instance.Events.Achievement.RaiseAchievementUnlocked(new AchievementDTO(achievement));
+                    }
                 }
 
                 GameManager.Instance.Events.Achievement.RaiseAchievementUpdated(new AchievementDTO(achievement));

@@ -51,6 +51,7 @@ public class AchievementRepository
         public ECurrencyType RewardCurrencyType;
         public int RewardCurrencyAmount;
         public string ClaimedDate;
+        public bool IsUnlocked;
     }
 
     [System.Serializable]

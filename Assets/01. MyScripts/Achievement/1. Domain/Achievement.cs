@@ -14,6 +14,8 @@ public class Achievement
     private bool _rewarded = false;
     public bool Rewarded => _rewarded;
     public DateTime ClaimedDate { get; private set; } = DateTime.MinValue;
+    public bool IsUnlocked = false;
+
 
     public Achievement(AchievementDataSO metaData)
     {
