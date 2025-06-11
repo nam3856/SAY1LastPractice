@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using static MockAttendanceRepository;
 
 public class AttendanceManager : MonoBehaviour
@@ -41,6 +42,17 @@ public class AttendanceManager : MonoBehaviour
         CreateSlots();
 
         GameManager.Instance.Events.Attendance.RaiseAttendanceInitialized();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(Attend());
+    }
+
+    private IEnumerator Attend()
+    {
+        yield return new WaitForSeconds(3f);
+        CheckTodayAttendance();
     }
 
     private void CreateSlots()

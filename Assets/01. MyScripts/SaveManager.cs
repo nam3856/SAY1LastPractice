@@ -48,7 +48,6 @@ public class SaveManager
             AttendanceManager.Instance.Initialize();
         }
 
-        AttendanceManager.Instance.CheckTodayAttendance();
     }
 
     public void SaveAttendanceData()
