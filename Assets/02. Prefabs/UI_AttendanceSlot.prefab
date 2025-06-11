@@ -501,7 +501,7 @@ GameObject:
   - component: {fileID: 5367763746929763583}
   - component: {fileID: 9182863112720114346}
   m_Layer: 5
-  m_Name: Day 1
+  m_Name: UI_AttendanceSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

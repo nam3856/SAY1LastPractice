@@ -21,9 +21,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-
         SaveManager = new SaveManager(AccountManager.Instance?.CurrentAccount.Email ?? "DefaultAccountID");
         LoadAll();
+
+        InitManager.Instance.RegisterOnAllInitialized(() =>
+        {
+            CurrencyManager.Instance.OnInitialized();
+            AttendanceManager.Instance.CheckTodayAttendance();
+        });
     }
 
     private void LoadAll()

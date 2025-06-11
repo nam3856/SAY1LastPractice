@@ -95,6 +95,8 @@ public class AchievementManager : MonoBehaviour
         _lastGoldValue = goldAchievement?.CurrentValue ?? 0;
 
         OnInitialized?.Invoke(GetAllAchievementDTOs());
+
+        InitManager.Instance.ReportInitialized("Achievement");
     }
 
 
@@ -106,7 +108,6 @@ public class AchievementManager : MonoBehaviour
             if (achievement.Condition == condition)
             {
                 achievement.Increase(value);
-
 
                 //업적 완료 확인
                 if (achievement.CanClaimReward())

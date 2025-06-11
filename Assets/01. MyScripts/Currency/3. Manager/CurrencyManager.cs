@@ -84,7 +84,10 @@ public class CurrencyManager : MonoBehaviour
                 _currencies.Add(type, currency);
             }
         }
-        
+
+
+        InitManager.Instance.ReportInitialized("Currency");
+
     }
 
     public void Add(ECurrencyType type, int amount)
@@ -94,6 +97,18 @@ public class CurrencyManager : MonoBehaviour
         GameManager.Instance.Events.Currency.RaiseCurrencyChanged(type, _currencies[type].Value);
 
         GameManager.Instance.SaveRequested(); 
+    }
+
+    public void OnInitialized()
+    {
+        foreach(var type in _currencyTypes)
+        {
+            if (!_currencies.ContainsKey(type))
+            {
+                GameManager.Instance.Events.Currency.RaiseCurrencyChanged(type, _currencies[type].Value);
+            }
+        }
+        
     }
 
     //public void Subtract(ECurrencyType type, int amount)

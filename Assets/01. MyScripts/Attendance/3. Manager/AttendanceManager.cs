@@ -42,17 +42,7 @@ public class AttendanceManager : MonoBehaviour
         CreateSlots();
 
         GameManager.Instance.Events.Attendance.RaiseAttendanceInitialized();
-    }
-
-    private void Start()
-    {
-        StartCoroutine(Attend());
-    }
-
-    private IEnumerator Attend()
-    {
-        yield return new WaitForSeconds(3f);
-        CheckTodayAttendance();
+        InitManager.Instance.ReportInitialized("Attendance");
     }
 
     private void CreateSlots()
