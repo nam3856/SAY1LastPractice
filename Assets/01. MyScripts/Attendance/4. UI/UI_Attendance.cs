@@ -4,15 +4,36 @@ using UnityEngine.UI;
 
 public class UI_Attendance : MonoBehaviour
 {
+    public Transform Parent;
+    public GameObject SlotPrefab;
+
+
+
     private List<UI_AttendanceSlot> _slots;
     public Button GetButton;
 
     private void Start()
     {
+        Init();
         GameManager.Instance.Events.Attendance.OnAttendanceInitialized += Refresh;
-
+        GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked += Refresh;
+        
         InitManager.Instance.ReportInitialized("UI_Attendance");
     }
+
+    private void Init()
+    {
+        List<AttendanceSlotDTO> slotDTOs = AttendanceManager.Instance.GetAttendanceSlotDTOs();
+        _slots = new List<UI_AttendanceSlot>();
+
+        for (int i = 0; i < slotDTOs.Count; i++)
+        {
+            GameObject slotObject = Instantiate(SlotPrefab, Parent);
+            _slots.Add(slotObject.GetComponent<UI_AttendanceSlot>());
+        }
+        Refresh();
+    }
+
 
     public void Refresh()
     {
