@@ -14,14 +14,12 @@ public class UI_Attendance : MonoBehaviour
 
     private void Start()
     {
-        Init();
-        GameManager.Instance.Events.Attendance.OnAttendanceInitialized += Refresh;
+        GameManager.Instance.Events.Attendance.OnAttendanceInitialized += Init;
         GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked += Refresh;
         
-        InitManager.Instance.ReportInitialized("UI_Attendance");
     }
 
-    private void Init()
+    public void Init()
     {
         List<AttendanceSlotDTO> slotDTOs = AttendanceManager.Instance.GetAttendanceSlotDTOs();
         _slots = new List<UI_AttendanceSlot>();
@@ -32,6 +30,8 @@ public class UI_Attendance : MonoBehaviour
             _slots.Add(slotObject.GetComponent<UI_AttendanceSlot>());
         }
         Refresh();
+
+        InitManager.Instance.ReportInitialized("UI_Attendance");
     }
 
 
