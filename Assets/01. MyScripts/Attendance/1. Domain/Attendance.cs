@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class Attendance : MonoBehaviour
+public class Attendance
 {
     public int TotalAttendanceDays;
     public DateTime LastAttendanceDate;
