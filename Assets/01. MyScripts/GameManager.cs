@@ -17,11 +17,12 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        SaveManager = new SaveManager();
     }
 
     private void Start()
     {
+
+        SaveManager = new SaveManager(AccountManager.Instance.CurrentAccount.Email ?? "DefaultAccountID");
         LoadAll();
     }
 
