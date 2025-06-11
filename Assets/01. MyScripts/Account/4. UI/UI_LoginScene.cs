@@ -98,17 +98,19 @@ public class UI_LoginScene : MonoBehaviour
 
         if (password != password2)
         {
-            RegisterInputFields.ResultText.text = "비밀번혹가 다릅니다.";
+            RegisterInputFields.ResultText.text = "비밀번호가 다릅니다.";
             return;
         }
 
-        if (AccountManager.Instance.TryRegister(email, nickname, password))
+        Result result = AccountManager.Instance.TryRegister(email, nickname, password);
+        if (result.IsSuccess)
         {
-            // 5. 로그인 창으로 돌아간다.
-            // (이때 아이디는 자동 입력되어 있다.)
             OnClickGoToLoginButton();
         }
-
+        else
+        {
+            RegisterInputFields.ResultText.text = result.Message;
+        }
     }
 
 
@@ -135,7 +137,10 @@ public class UI_LoginScene : MonoBehaviour
         if (AccountManager.Instance.TryLogin(email, password))
         {
             SceneManager.LoadScene(1);
-
+        }
+        else
+        {
+            LoginInputFields.ResultText.text = "아이디 또는 비밀번호가 맞지 않습니다.";
         }
     }
 }

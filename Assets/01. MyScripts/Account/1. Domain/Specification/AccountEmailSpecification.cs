@@ -21,6 +21,7 @@ public class AccountEmailSpecification : ISpecification<string>
             return false;
         }
 
+
         return true;
     }
 

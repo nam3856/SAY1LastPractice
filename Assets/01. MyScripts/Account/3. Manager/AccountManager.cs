@@ -7,10 +7,11 @@ public class AccountManager : MonoBehaviour
     public static AccountManager Instance;
 
     private Account _myAccount;
+    public AccountDTO CurrentAccount => _myAccount.ToDTO();
 
     private AccountRepository _repository;
 
-    public AccountDTO CurrentAccount => _myAccount?.ToDTO();
+    private const string SALT = "123456";
 
     private void Awake()
     {
@@ -32,13 +33,12 @@ public class AccountManager : MonoBehaviour
         _repository = new AccountRepository();
     }
 
-    private const string SALT = "123456";
-    public bool TryRegister(string email, string nickname, string password)
+    public Result TryRegister(string email, string nickname, string password)
     {
         AccountSaveData saveData = _repository.Find(email);
         if (saveData != null)
         {
-            return false;
+            return Result.Fail("이미 가입한 이메일입니다.");
         }
 
         string encryptedPassword = CryptoUtil.Encryption(password, SALT);
@@ -47,7 +47,7 @@ public class AccountManager : MonoBehaviour
 
         // 레포 저장
 
-        return true;
+        return Result.Success();
     }
 
     public bool TryLogin(string email, string password)
