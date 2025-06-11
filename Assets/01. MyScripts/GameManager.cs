@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
 
-        SaveManager = new SaveManager(AccountManager.Instance.CurrentAccount.Email ?? "DefaultAccountID");
+        SaveManager = new SaveManager(AccountManager.Instance?.CurrentAccount.Email ?? "DefaultAccountID");
         LoadAll();
     }
 
@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     {
         SaveManager.LoadCurrencyData();
         SaveManager.LoadAchievementData();
+        SaveManager.LoadAttendanceData();
     }
     public void SaveRequested()
     {
@@ -40,5 +41,6 @@ public class GameManager : MonoBehaviour
     {
         SaveManager.SaveCurrencyData();
         SaveManager.SaveAchievementData();
+        SaveManager.SaveAttendanceData();
     }
 }
