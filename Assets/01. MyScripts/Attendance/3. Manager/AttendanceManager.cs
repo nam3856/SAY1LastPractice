@@ -10,8 +10,9 @@ public class AttendanceManager : MonoBehaviour
     public IReadOnlyList<AttendanceSlot> AttendanceSlots => _attendanceSlots;
 
     private Attendance _attendance;
-
     public static AttendanceManager Instance { get; private set; }
+
+    private int MaxAttendanceDays => _attendanceDataList.Count;
     private void Awake()
     {
         if (Instance == null)
@@ -38,6 +39,8 @@ public class AttendanceManager : MonoBehaviour
 
         // Attendance Slot 초기화
         CreateSlots();
+
+        GameManager.Instance.Events.Attendance.RaiseAttendanceInitialized();
     }
 
     private void CreateSlots()
@@ -64,7 +67,14 @@ public class AttendanceManager : MonoBehaviour
     {
         if (_attendance.CheckTodayAttendance())
         {
+            // 출석 리셋 조건: 마지막 날 출석을 이미 했고, 다음 출석이면 8일차 이상인 상황
+            if (_attendance.TotalAttendanceDays >= MaxAttendanceDays)
+            {
+                ResetAttendanceCycle();
+            }
+
             _attendance.Increase(1);
+            GameManager.Instance.Events.Attendance.RaiseTodayAttendanceChecked();
             Debug.Log("오늘 출석을 완료했어요!");
         }
         else
@@ -73,6 +83,31 @@ public class AttendanceManager : MonoBehaviour
         }
     }
 
+    private void ResetAttendanceCycle()
+    {
+        _attendance.TotalAttendanceDays = 0;
+
+        foreach (var slot in _attendanceSlots)
+        {
+            slot.IsClaimed = false;
+        }
+
+        Debug.Log("출석 주기가 완료되어 1일차부터 다시 시작합니다.");
+    }
+
+
+    public bool HasUnclaimedRewardAvailable()
+    {
+        int claimableCount = Mathf.Min(_attendance.TotalAttendanceDays, _attendanceSlots.Count);
+
+        for (int i = 0; i < claimableCount; i++)
+        {
+            if (_attendanceSlots[i].CanClaimReward())
+                return true;
+        }
+
+        return false;
+    }
     /// <summary>
     /// 받을 수 있는 모든 출석 보상을 수령합니다.
     /// </summary>

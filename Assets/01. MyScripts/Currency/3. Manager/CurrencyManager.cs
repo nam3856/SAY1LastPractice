@@ -32,17 +32,28 @@ public class CurrencyManager : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.Events.Achievement.OnAchievementClaimed += OnAchievementClaimed;
+        GameManager.Instance.Events.Attendance.OnAttendanceRewardClaimed += OnAttendanceRewardClaimed;
     }
 
     private void OnDestroy()
     {
-        GameManager.Instance.Events.Achievement.OnAchievementClaimed -= OnAchievementClaimed;
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.Events.Achievement.OnAchievementClaimed -= OnAchievementClaimed;
+            GameManager.Instance.Events.Attendance.OnAttendanceRewardClaimed -= OnAttendanceRewardClaimed;
+        }
+        
     }
 
+    private void OnAttendanceRewardClaimed(AttendanceSlotDTO attendanceData)
+    {
+        Add(attendanceData.RewardCurrencyType, attendanceData.RewardCurrencyAmount);
+        Debug.Log($"출석 보상 지급 완료: {attendanceData.RewardCurrencyType} {attendanceData.RewardCurrencyAmount}");
+    }
     private void OnAchievementClaimed(AchievementDTO achievement)
     {
         Add(achievement.RewardCurrencyType, achievement.RewardCurrencyAmount);
-        Debug.Log($"보상 지급 완료: {achievement.RewardCurrencyType} {achievement.RewardCurrencyAmount}");
+        Debug.Log($"업적 보상 지급 완료: {achievement.RewardCurrencyType} {achievement.RewardCurrencyAmount}");
     }
 
     public void Initialize(List<CurrencyDTO> loadedData)

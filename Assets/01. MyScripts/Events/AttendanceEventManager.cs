@@ -4,7 +4,7 @@ public class AttendanceEventManager
 {
     public event Action OnAttendanceInitialized;
     public event Action OnTodayAttendanceChecked;
-    public event Action<ECurrencyType, int> OnAttendanceRewardClaimed;
+    public event Action<AttendanceSlotDTO> OnAttendanceRewardClaimed;
     public void RaiseAttendanceInitialized()
     {
         OnAttendanceInitialized?.Invoke();
@@ -16,7 +16,7 @@ public class AttendanceEventManager
     public void RaiseRewardClaimed(AttendanceSlotDTO attendanceSlotDTO)
     {
 
-        OnAttendanceRewardClaimed?.Invoke(attendanceSlotDTO.RewardCurrencyType, attendanceSlotDTO.RewardCurrencyAmount);
+        OnAttendanceRewardClaimed?.Invoke(attendanceSlotDTO);
     }
 
 }
