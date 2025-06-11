@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AttendanceSlot : MonoBehaviour
+public class AttendanceSlot
 {
     public string DayName;
     public ECurrencyType RewardCurrencyType;
