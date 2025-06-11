@@ -88,6 +88,7 @@ public class AttendanceManager : MonoBehaviour
             _attendance.Increase(1);
             GameManager.Instance.Events.Attendance.RaiseTodayAttendanceChecked();
             Debug.Log("오늘 출석을 완료했어요!");
+            GameManager.Instance.SaveRequested();
         }
         else
         {
@@ -178,18 +179,24 @@ public class AttendanceManager : MonoBehaviour
         }
     }
 
-    public MockAttendanceSaveModel ToSaveModel()
-    {
-        return new MockAttendanceSaveModel
-        {
-            AttendanceData = GetCurrentAttendanceDTO(),
-            SlotDataList = GetAttendanceSlotDTOs()
-        };
-    }
+    //public MockAttendanceSaveModel ToSaveModel()
+    //{
+    //    return new MockAttendanceSaveModel
+    //    {
+    //        AttendanceData = GetCurrentAttendanceDTO(),
+    //        SlotDataList = GetAttendanceSlotDTOs()
+    //    };
+    //}
 
-    public void LoadFromSaveModel(MockAttendanceSaveModel model)
+    //public void LoadFromSaveModel(MockAttendanceSaveModel model)
+    //{
+    //    Initialize(model.AttendanceData);
+    //    LoadClaimStates(model.SlotDataList);
+    //}
+
+    public void LoadFromSaveModel(List<AttendanceSlotDTO> slotDTOs, AttendanceDTO attendance)
     {
-        Initialize(model.AttendanceData);
-        LoadClaimStates(model.SlotDataList);
+        Initialize(attendance);
+        LoadClaimStates(slotDTOs);
     }
 }
