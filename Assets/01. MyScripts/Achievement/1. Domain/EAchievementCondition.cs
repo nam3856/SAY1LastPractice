@@ -5,4 +5,5 @@
     BossKillCount,
     PlayTime,
     Trigger,
+    Attendance,
 }

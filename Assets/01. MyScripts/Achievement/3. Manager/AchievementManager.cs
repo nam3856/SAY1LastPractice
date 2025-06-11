@@ -30,7 +30,11 @@ public class AchievementManager : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager.Instance.Events.Currency.OnCurrencyChanged -= OnCurrencyChanged;
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.Events.Currency.OnCurrencyChanged -= OnCurrencyChanged;
+            GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked -= OnAttendanceChecked;
+        }
     }
 
     private void OnCurrencyChanged(CurrencyChangedEventArgs args)
@@ -46,11 +50,18 @@ public class AchievementManager : MonoBehaviour
         _lastGoldValue = args.NewValue;
     }
 
+    private void OnAttendanceChecked()
+    {
+        // 출석 체크 시 업적 진행도 증가
+        Increase(EAchievementCondition.Attendance, 1);
+    }
+
 
     public void Initialize(List<AchievementDTO> savedData)
     {
         _achievements = new List<Achievement>();
         GameManager.Instance.Events.Currency.OnCurrencyChanged += OnCurrencyChanged;
+        GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked += OnAttendanceChecked;
 
         var validIds = new HashSet<string>();
         foreach (var dataSO in _achievementDataList)
