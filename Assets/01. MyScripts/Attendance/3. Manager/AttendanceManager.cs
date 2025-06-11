@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using static MockAttendanceRepository;
 
 public class AttendanceManager : MonoBehaviour
@@ -43,6 +44,17 @@ public class AttendanceManager : MonoBehaviour
         GameManager.Instance.Events.Attendance.RaiseAttendanceInitialized();
     }
 
+    private void Start()
+    {
+        StartCoroutine(Attend());
+    }
+
+    private IEnumerator Attend()
+    {
+        yield return new WaitForSeconds(3f);
+        CheckTodayAttendance();
+    }
+
     private void CreateSlots()
     {
         _attendanceSlots = new List<AttendanceSlot>();
@@ -76,6 +88,7 @@ public class AttendanceManager : MonoBehaviour
             _attendance.Increase(1);
             GameManager.Instance.Events.Attendance.RaiseTodayAttendanceChecked();
             Debug.Log("오늘 출석을 완료했어요!");
+            GameManager.Instance.SaveRequested();
         }
         else
         {
@@ -166,18 +179,24 @@ public class AttendanceManager : MonoBehaviour
         }
     }
 
-    public MockAttendanceSaveModel ToSaveModel()
-    {
-        return new MockAttendanceSaveModel
-        {
-            AttendanceData = GetCurrentAttendanceDTO(),
-            SlotDataList = GetAttendanceSlotDTOs()
-        };
-    }
+    //public MockAttendanceSaveModel ToSaveModel()
+    //{
+    //    return new MockAttendanceSaveModel
+    //    {
+    //        AttendanceData = GetCurrentAttendanceDTO(),
+    //        SlotDataList = GetAttendanceSlotDTOs()
+    //    };
+    //}
 
-    public void LoadFromSaveModel(MockAttendanceSaveModel model)
+    //public void LoadFromSaveModel(MockAttendanceSaveModel model)
+    //{
+    //    Initialize(model.AttendanceData);
+    //    LoadClaimStates(model.SlotDataList);
+    //}
+
+    public void LoadFromSaveModel(List<AttendanceSlotDTO> slotDTOs, AttendanceDTO attendance)
     {
-        Initialize(model.AttendanceData);
-        LoadClaimStates(model.SlotDataList);
+        Initialize(attendance);
+        LoadClaimStates(slotDTOs);
     }
 }

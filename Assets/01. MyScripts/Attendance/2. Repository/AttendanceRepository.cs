@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class AttendanceRepository
 {
@@ -13,8 +14,7 @@ public class AttendanceRepository
         AttendanceSaveData saveData = new AttendanceSaveData
         {
             TotalAttendanceDays = attendanceDTO.TotalAttendanceDays,
-            IsClaimed = false, // 필요시 DTO에 IsClaimed 추가
-            LastAttendanceDate = attendanceDTO.LastAttendanceDate
+            LastAttendanceDate = attendanceDTO.LastAttendanceDate.ToString("o")
         };
         string json = JsonUtility.ToJson(saveData);
         PlayerPrefs.SetString(ATTENDANCE_SAVE_KEY, json);
@@ -47,7 +47,8 @@ public class AttendanceRepository
 
         string json = PlayerPrefs.GetString(ATTENDANCE_SAVE_KEY);
         AttendanceSaveData saveData = JsonUtility.FromJson<AttendanceSaveData>(json);
-        return new AttendanceDTO(saveData.TotalAttendanceDays, saveData.LastAttendanceDate);
+        DateTime savedDateTime = string.IsNullOrEmpty(saveData.LastAttendanceDate) ? DateTime.MinValue : DateTime.Parse(saveData.LastAttendanceDate);
+        return new AttendanceDTO(saveData.TotalAttendanceDays, savedDateTime);
     }
 
     public List<AttendanceSlotDTO> LoadSlots()
@@ -87,8 +88,7 @@ public class AttendanceRepository
     public struct AttendanceSaveData
     {
         public int TotalAttendanceDays;
-        public bool IsClaimed;
-        public DateTime LastAttendanceDate;
+        public string LastAttendanceDate;
     }
 
     [Serializable]
