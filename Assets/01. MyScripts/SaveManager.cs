@@ -4,7 +4,7 @@ public class SaveManager
 {
     private CurrencyRepository _currencyRepository = new CurrencyRepository();
     private AchievementRepository _achievementRepository = new AchievementRepository();
-    private MockAttendanceRepository _attendanceRepository = new MockAttendanceRepository();
+    private AttendanceRepository _attendanceRepository = new AttendanceRepository();
 
     private string _accountID;
 
@@ -38,22 +38,30 @@ public class SaveManager
 
     public void LoadAttendanceData()
     {
-        var saved = _attendanceRepository.Load(_accountID);
-        if (saved.HasValue)
+        var dataBundle = _attendanceRepository.LoadAll();
+
+        var savedSlots = dataBundle.Slots;
+        var savedAttendance = dataBundle.AttendanceDTO;
+
+        if (savedSlots.Count>0 && savedAttendance != null)
         {
-            AttendanceManager.Instance.LoadFromSaveModel(saved.Value);
+            AttendanceManager.Instance.LoadFromSaveModel(savedSlots, savedAttendance);
+            Debug.Log("출석 데이터 로드 완료");
         }
         else
         {
             AttendanceManager.Instance.Initialize();
+            Debug.Log("출석 데이터 초기화");
         }
 
-        AttendanceManager.Instance.CheckTodayAttendance();
     }
 
     public void SaveAttendanceData()
     {
-        var data = AttendanceManager.Instance.ToSaveModel();
-        _attendanceRepository.Save(data, _accountID);
+        var slotsData = AttendanceManager.Instance.GetAttendanceSlotDTOs();
+        var attendanceData = AttendanceManager.Instance.GetCurrentAttendanceDTO();
+        _attendanceRepository.SaveAttendance(attendanceData);
+        _attendanceRepository.SaveSlots(slotsData);
+
     }
 }
