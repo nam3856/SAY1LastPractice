@@ -16,6 +16,7 @@ public class UI_Attendance : MonoBehaviour
     {
         Init();
         GameManager.Instance.Events.Attendance.OnAttendanceInitialized += Refresh;
+        GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked += Refresh;
     }
 
     private void Init()
