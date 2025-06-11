@@ -20,6 +20,7 @@ public class UI_Attendance : MonoBehaviour
         {
             _slots[i].Refresh(slotDTOs[i]);
         }
+        GetButton.interactable = AttendanceManager.Instance.HasUnclaimedRewardAvailable();
     }
 
     public void ClaimReward()
@@ -30,6 +31,8 @@ public class UI_Attendance : MonoBehaviour
         }
         Refresh();
     }
+
+
 }
 
 
