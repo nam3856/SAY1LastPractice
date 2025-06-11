@@ -11,10 +11,10 @@ public class UI_Currency : MonoBehaviour
 
     private void Start()
     {
-        // 초기화
-        Initalize();
         // 이벤트 구독
         GameManager.Instance.Events.Currency.OnCurrencyChanged += OnCurrencyChanged;
+
+        InitManager.Instance.ReportInitialized("UI_Currency");
     }
 
     private void OnDestroy()

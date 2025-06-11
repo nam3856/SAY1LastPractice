@@ -10,6 +10,8 @@ public class UI_Attendance : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.Events.Attendance.OnAttendanceInitialized += Refresh;
+
+        InitManager.Instance.ReportInitialized("UI_Attendance");
     }
 
     public void Refresh()
