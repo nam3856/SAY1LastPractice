@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Day7
   m_EditorClassIdentifier: 
   Day: 6
-  RewardCurrencyType: 0
+  RewardCurrencyType: 1
   RewardCurrencyAmount: 100
