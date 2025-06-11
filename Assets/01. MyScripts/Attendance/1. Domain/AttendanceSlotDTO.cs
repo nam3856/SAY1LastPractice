@@ -6,6 +6,7 @@ public class AttendanceSlotDTO
     public readonly ECurrencyType RewardCurrencyType;
     public readonly int RewardCurrencyAmount;
     public readonly bool IsClaimed;
+    public readonly bool IsHighlight;
 
     public AttendanceSlotDTO(AttendanceSlot attendanceSlot)
     {
@@ -13,6 +14,7 @@ public class AttendanceSlotDTO
         RewardCurrencyType = attendanceSlot.RewardCurrencyType;
         RewardCurrencyAmount = attendanceSlot.RewardCurrencyAmount;
         IsClaimed = attendanceSlot.IsClaimed;
+
     }
     public AttendanceSlotDTO(string dayName, ECurrencyType rewardCurrencyType, int rewardCurrencyAmount, bool isClaimed)
     {
@@ -20,6 +22,16 @@ public class AttendanceSlotDTO
         RewardCurrencyType = rewardCurrencyType;
         RewardCurrencyAmount = rewardCurrencyAmount;
         IsClaimed = isClaimed;
+    }
+
+    public AttendanceSlotDTO(AttendanceSlot slot, int currentAttendanceDay, int slotIndex)
+    {
+        DayName = slot.DayName;
+        RewardCurrencyType = slot.RewardCurrencyType;
+        RewardCurrencyAmount = slot.RewardCurrencyAmount;
+        IsClaimed = slot.IsClaimed;
+
+        IsHighlight = slotIndex < currentAttendanceDay && !slot.IsClaimed;
     }
     public AttendanceSlot ToDomain()
     {
