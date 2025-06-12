@@ -71,12 +71,24 @@ public class Attendance
     }
     public void LoadClaimStates(List<AttendanceRewardDTO> dtos)
     {
-        for (int i = 0; i < dtos.Count && i < _rewards.Count; i++)
+        if (dtos == null)
+            throw new ArgumentNullException(nameof(dtos));
+
+        // 1. 수령된 DayName만 모음
+        var claimedDayNames = new HashSet<string>();
+        foreach (var dto in dtos)
         {
-            if (dtos[i].IsClaimed)
-                _rewards[i].MarkAsClaimedIfPossible();
+            if (dto.IsClaimed)
+                claimedDayNames.Add(dto.DayName);
+        }
+
+        // 2. 현재 도메인 보상들과 매칭하여 복원
+        foreach (var reward in _rewards)
+        {
+            if (claimedDayNames.Contains(reward.DayName))
+                reward.MarkAsClaimedIfPossible(); // 내부에서 중복 수령 방지
             else
-                _rewards[i].ResetClaim();
+                reward.ResetClaim();
         }
     }
 
