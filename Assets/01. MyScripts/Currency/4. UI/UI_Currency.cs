@@ -28,6 +28,7 @@ public class UI_Currency : MonoBehaviour
 
     private void OnCurrencyChanged(CurrencyChangedEventArgs args)
     {
+        Debug.Log("화폐 변경 이벤트 발생: " + args.CurrencyType + ", 새 값: " + args.NewValue);
         switch (args.CurrencyType)
         {
             case ECurrencyType.Gold:

@@ -1,14 +1,13 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class AttendanceRepository
 {
     private const string ATTENDANCE_SAVE_KEY = "AttendanceDTO";
-    private const string SLOT_SAVE_KEY = "AttendanceSlotDTOList";
+    private const string REWARD_SAVE_KEY = "AttendanceRewardDTOList";
 
-    // √‚ºÆ ¡§∫∏ ¿˙¿Â
+    // Ï∂úÏÑù Ï†ïÎ≥¥ Ï†ÄÏû•
     public void SaveAttendance(AttendanceDTO attendanceDTO)
     {
         AttendanceSaveData saveData = new AttendanceSaveData
@@ -21,12 +20,12 @@ public class AttendanceRepository
         PlayerPrefs.Save();
     }
 
-    // ΩΩ∑‘ ¡§∫∏ ¿˙¿Â
-    public void SaveSlots(List<AttendanceSlotDTO> slotDTOs)
+    // Ïä¨Î°Ø Ï†ïÎ≥¥ Ï†ÄÏû•
+    public void SaveRewards(List<AttendanceRewardDTO> rewardDTOs)
     {
-        AttendanceSlotSaveDataList saveDataList = new AttendanceSlotSaveDataList
+        AttendanceRewardSaveDataList saveDataList = new AttendanceRewardSaveDataList
         {
-            DataList = slotDTOs.ConvertAll(dto => new AttendanceSlotSaveData
+            DataList = rewardDTOs.ConvertAll(dto => new AttendanceRewardSaveData
             {
                 DayName = dto.DayName,
                 RewardCurrencyType = dto.RewardCurrencyType,
@@ -35,11 +34,11 @@ public class AttendanceRepository
             })
         };
         string json = JsonUtility.ToJson(saveDataList);
-        PlayerPrefs.SetString(SLOT_SAVE_KEY, json);
+        PlayerPrefs.SetString(REWARD_SAVE_KEY, json);
         PlayerPrefs.Save();
     }
 
-    // √‚ºÆ ¡§∫∏ ∑ŒµÂ
+    // Ï∂úÏÑù Ï†ïÎ≥¥ Î°úÎìú
     public AttendanceDTO LoadAttendance()
     {
         if (!PlayerPrefs.HasKey(ATTENDANCE_SAVE_KEY))
@@ -51,19 +50,19 @@ public class AttendanceRepository
         return new AttendanceDTO(saveData.TotalAttendanceDays, savedDateTime);
     }
 
-    public List<AttendanceSlotDTO> LoadSlots()
+    public List<AttendanceRewardDTO> LoadRewards()
     {
-        if (!PlayerPrefs.HasKey(SLOT_SAVE_KEY))
-            return new List<AttendanceSlotDTO>();
+        if (!PlayerPrefs.HasKey(REWARD_SAVE_KEY))
+            return new List<AttendanceRewardDTO>();
 
-        string json = PlayerPrefs.GetString(SLOT_SAVE_KEY);
-        AttendanceSlotSaveDataList saveDataList = JsonUtility.FromJson<AttendanceSlotSaveDataList>(json);
-        var result = new List<AttendanceSlotDTO>();
+        string json = PlayerPrefs.GetString(REWARD_SAVE_KEY);
+        AttendanceRewardSaveDataList saveDataList = JsonUtility.FromJson<AttendanceRewardSaveDataList>(json);
+        var result = new List<AttendanceRewardDTO>();
         if (saveDataList.DataList != null)
         {
             foreach (var data in saveDataList.DataList)
             {
-                result.Add(new AttendanceSlotDTO(
+                result.Add(new AttendanceRewardDTO(
                     data.DayName,
                     data.RewardCurrencyType,
                     data.RewardCurrencyAmount,
@@ -74,13 +73,13 @@ public class AttendanceRepository
         return result;
     }
 
-    // √‚ºÆ ¡§∫∏øÕ ΩΩ∑‘ ¡§∫∏∏¶ «— π¯ø° π›»Ø
+    // Ï∂úÏÑù Ï†ïÎ≥¥ÏôÄ Ïä¨Î°Ø Ï†ïÎ≥¥Î•º Ìïú Î≤àÏóê Î∞òÌôò
     public AttendanceDataBundle LoadAll()
     {
         return new AttendanceDataBundle
         {
             AttendanceDTO = LoadAttendance(),
-            Slots = LoadSlots()
+            Rewards = LoadRewards()
         };
     }
 
@@ -92,7 +91,7 @@ public class AttendanceRepository
     }
 
     [Serializable]
-    public struct AttendanceSlotSaveData
+    public struct AttendanceRewardSaveData
     {
         public string DayName;
         public ECurrencyType RewardCurrencyType;
@@ -101,14 +100,14 @@ public class AttendanceRepository
     }
 
     [Serializable]
-    public struct AttendanceSlotSaveDataList
+    public struct AttendanceRewardSaveDataList
     {
-        public List<AttendanceSlotSaveData> DataList;
+        public List<AttendanceRewardSaveData> DataList;
     }
 
     public struct AttendanceDataBundle
     {
         public AttendanceDTO AttendanceDTO;
-        public List<AttendanceSlotDTO> Slots;
+        public List<AttendanceRewardDTO> Rewards;
     }
 }

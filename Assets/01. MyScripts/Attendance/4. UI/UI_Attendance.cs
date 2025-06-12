@@ -6,9 +6,6 @@ public class UI_Attendance : MonoBehaviour
 {
     public Transform Parent;
     public GameObject SlotPrefab;
-
-
-
     private List<UI_AttendanceSlot> _slots;
     public Button GetButton;
 
@@ -16,12 +13,12 @@ public class UI_Attendance : MonoBehaviour
     {
         GameManager.Instance.Events.Attendance.OnAttendanceInitialized += Init;
         GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked += Refresh;
-        
+
     }
 
     public void Init()
     {
-        List<AttendanceSlotDTO> slotDTOs = AttendanceManager.Instance.GetAttendanceSlotDTOs();
+        List<AttendanceRewardDTO> slotDTOs = AttendanceManager.Instance.GetAttendanceSlotDTOs();
         _slots = new List<UI_AttendanceSlot>();
 
         for (int i = 0; i < slotDTOs.Count; i++)
@@ -35,9 +32,9 @@ public class UI_Attendance : MonoBehaviour
     }
 
 
-    public void Refresh()
+    public void Refresh(bool _ = false)
     {
-        List<AttendanceSlotDTO> slotDTOs = AttendanceManager.Instance.GetAttendanceSlotDTOs();
+        List<AttendanceRewardDTO> slotDTOs = AttendanceManager.Instance.GetAttendanceSlotDTOs();
 
         for (int i = 0; i < slotDTOs.Count; i++)
         {

@@ -8,29 +8,31 @@ public class UI_AttendanceSlot : MonoBehaviour
     public GameObject[] CurrencyType;
     public TextMeshProUGUI CurrencyAmountText;
     public Toggle IsClaimedToggle;
+    public GameObject HighlightEffect;
 
-    private AttendanceSlotDTO _attendanceSlotDTO;
+    private AttendanceRewardDTO _attendanceRewardDTO;
 
-    public void Refresh(AttendanceSlotDTO attendanceSlotDTO)
+    public void Refresh(AttendanceRewardDTO attendanceRewardDTO)
     {
-        _attendanceSlotDTO = attendanceSlotDTO;
+        _attendanceRewardDTO = attendanceRewardDTO;
 
-        DayNameText.text = _attendanceSlotDTO.DayName;
-        if (attendanceSlotDTO.RewardCurrencyType == ECurrencyType.Gold)
+        DayNameText.text = _attendanceRewardDTO.DayName;
+        if (attendanceRewardDTO.RewardCurrencyType == ECurrencyType.Gold)
         {
             CurrencyType[0].SetActive(true);
             CurrencyType[1].SetActive(false);
         }
-        else if (attendanceSlotDTO.RewardCurrencyType == ECurrencyType.Diamond)
+        else if (attendanceRewardDTO.RewardCurrencyType == ECurrencyType.Diamond)
         {
             CurrencyType[0].SetActive(false);
             CurrencyType[1].SetActive(true);
         }
 
-        CurrencyAmountText.text = _attendanceSlotDTO.RewardCurrencyAmount.ToString();
+        CurrencyAmountText.text = _attendanceRewardDTO.RewardCurrencyAmount.ToString();
 
-        IsClaimedToggle.isOn = attendanceSlotDTO.IsClaimed;
+        IsClaimedToggle.isOn = attendanceRewardDTO.IsClaimed;
 
+        HighlightEffect?.SetActive(_attendanceRewardDTO.IsHighlight && !_attendanceRewardDTO.IsClaimed);
     }
 
 }

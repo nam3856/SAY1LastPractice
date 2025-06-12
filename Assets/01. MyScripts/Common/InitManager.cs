@@ -24,6 +24,7 @@ public class InitManager : MonoBehaviour
 
         if (IsAllInitialized())
         {
+            Debug.Log("All expected keys have been initialized.");
             foreach (var callback in _onAllInitializedCallbacks)
                 callback.Invoke();
 
