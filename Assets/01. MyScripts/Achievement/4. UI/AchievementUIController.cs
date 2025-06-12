@@ -18,6 +18,9 @@ public class AchievementUIController : MonoBehaviour
     {
         GameManager.Instance.Events.Achievement.OnAchievementUpdated += Refresh;
         GameManager.Instance.Events.Achievement.OnAchievementUnlocked += Refresh;
+
+
+        InitManager.Instance.ReportInitialized("UI_Achievement");
     }
     private void OnDestroy()
     {

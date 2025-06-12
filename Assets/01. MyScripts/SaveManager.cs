@@ -40,7 +40,7 @@ public class SaveManager
     {
         var dataBundle = _attendanceRepository.LoadAll();
 
-        var savedSlots = dataBundle.Slots;
+        var savedSlots = dataBundle.Rewards;
         var savedAttendance = dataBundle.AttendanceDTO;
 
         if (savedSlots.Count>0 && savedAttendance != null)
@@ -61,7 +61,7 @@ public class SaveManager
         var slotsData = AttendanceManager.Instance.GetAttendanceSlotDTOs();
         var attendanceData = AttendanceManager.Instance.GetCurrentAttendanceDTO();
         _attendanceRepository.SaveAttendance(attendanceData);
-        _attendanceRepository.SaveSlots(slotsData);
+        _attendanceRepository.SaveRewards(slotsData);
 
     }
 }

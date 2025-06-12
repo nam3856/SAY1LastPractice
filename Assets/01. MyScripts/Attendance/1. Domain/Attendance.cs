@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Attendance
 {
-    public int TotalAttendanceDays;
-    public DateTime LastAttendanceDate;
-
-    public Attendance(int totalAttendanceDays, DateTime lastAttendanceDate)
+    public int TotalAttendanceDays { get; private set; }
+    public DateTime LastAttendanceDate { get; private set; }
+    private List<AttendanceReward> _rewards;
+    public IReadOnlyList<AttendanceReward> Rewards => _rewards;
+    public Attendance(int totalAttendanceDays, DateTime lastAttendanceDate, List<AttendanceReward> rewards)
     {
         if(totalAttendanceDays < 0)
         {
@@ -19,21 +21,90 @@ public class Attendance
 
         TotalAttendanceDays = totalAttendanceDays;
         LastAttendanceDate = lastAttendanceDate;
+
+        TotalAttendanceDays = totalAttendanceDays;
+        LastAttendanceDate = lastAttendanceDate;
+        _rewards = rewards ?? throw new ArgumentNullException(nameof(rewards));
     }
 
-    public void Increase(int value)
+    public bool CheckTodayAttendance() => LastAttendanceDate.Date < DateTime.Now.Date;
+
+    public bool RecordAttendance()
     {
-        if(value <= 0)
+        if (!CheckTodayAttendance())
+            return false;
+
+        if (TotalAttendanceDays >= _rewards.Count)
+            ResetCycle();
+
+        TotalAttendanceDays++;
+        LastAttendanceDate = DateTime.Now;
+        return true;
+    }
+
+    public void ResetCycle()
+    {
+        TotalAttendanceDays = 0;
+        foreach (var reward in _rewards)
+            reward.ResetClaim();
+    }
+
+    public List<AttendanceReward> ClaimAvailableRewards()
+    {
+        var claimable = new List<AttendanceReward>();
+        for (int i = 0; i < Math.Min(TotalAttendanceDays, _rewards.Count); i++)
         {
-            throw new System.ArgumentOutOfRangeException(nameof(value), "증가 값은 0보다 커야 합니다.");
+            if (_rewards[i].MarkAsClaimedIfPossible())
+                claimable.Add(_rewards[i]);
+        }
+        return claimable;
+    }
+
+    public static Attendance CreateNew(List<AttendanceReward> rewards)
+    {
+        return new Attendance(0, DateTime.MinValue, rewards);
+    }
+
+    public static Attendance CreateFromDTO(AttendanceDTO dto, List<AttendanceReward> rewards)
+    {
+        return new Attendance(dto.TotalAttendanceDays, dto.LastAttendanceDate, rewards);
+    }
+    public void LoadClaimStates(List<AttendanceRewardDTO> dtos)
+    {
+        if (dtos == null)
+            throw new ArgumentNullException(nameof(dtos));
+
+        // 1. 수령된 DayName만 모음
+        var claimedDayNames = new HashSet<string>();
+        foreach (var dto in dtos)
+        {
+            if (dto.IsClaimed)
+                claimedDayNames.Add(dto.DayName);
         }
 
-        TotalAttendanceDays += value;
-        LastAttendanceDate = DateTime.Now;
+        // 2. 현재 도메인 보상들과 매칭하여 복원
+        foreach (var reward in _rewards)
+        {
+            if (claimedDayNames.Contains(reward.DayName))
+                reward.MarkAsClaimedIfPossible(); // 내부에서 중복 수령 방지
+            else
+                reward.ResetClaim();
+        }
     }
 
-    public bool CheckTodayAttendance()
+    public AttendanceDTO ToDTO()
     {
-        return LastAttendanceDate.Date < DateTime.Now.Date;
+        return new AttendanceDTO(this);
+    }
+
+    public bool HasUnclaimedReward()
+    {
+        int claimableCount = Math.Min(TotalAttendanceDays, _rewards.Count);
+        for (int i = 0; i < claimableCount; i++)
+        {
+            if (_rewards[i].CanClaimReward())
+                return true;
+        }
+        return false;
     }
 }
