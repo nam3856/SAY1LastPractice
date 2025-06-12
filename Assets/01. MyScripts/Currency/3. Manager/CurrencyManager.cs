@@ -45,7 +45,7 @@ public class CurrencyManager : MonoBehaviour
         
     }
 
-    private void OnAttendanceRewardClaimed(AttendanceSlotDTO attendanceData)
+    private void OnAttendanceRewardClaimed(AttendanceRewardDTO attendanceData)
     {
         Add(attendanceData.RewardCurrencyType, attendanceData.RewardCurrencyAmount);
         Debug.Log($"출석 보상 지급 완료: {attendanceData.RewardCurrencyType} {attendanceData.RewardCurrencyAmount}");
@@ -103,9 +103,10 @@ public class CurrencyManager : MonoBehaviour
     {
         foreach(var type in _currencyTypes)
         {
-            if (!_currencies.ContainsKey(type))
+            if (_currencies.ContainsKey(type))
             {
                 GameManager.Instance.Events.Currency.RaiseCurrencyChanged(type, _currencies[type].Value);
+                Debug.Log($"{type}, {_currencies[type].Value}");
             }
         }
         

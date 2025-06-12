@@ -3,17 +3,17 @@
 public class AttendanceEventManager
 {
     public event Action OnAttendanceInitialized;
-    public event Action OnTodayAttendanceChecked;
-    public event Action<AttendanceSlotDTO> OnAttendanceRewardClaimed;
+    public event Action<bool> OnTodayAttendanceChecked;
+    public event Action<AttendanceRewardDTO> OnAttendanceRewardClaimed;
     public void RaiseAttendanceInitialized()
     {
         OnAttendanceInitialized?.Invoke();
     }
-    public void RaiseTodayAttendanceChecked()
+    public void RaiseTodayAttendanceChecked(bool check)
     {
-        OnTodayAttendanceChecked?.Invoke();
+        OnTodayAttendanceChecked?.Invoke(check);
     }
-    public void RaiseRewardClaimed(AttendanceSlotDTO attendanceSlotDTO)
+    public void RaiseRewardClaimed(AttendanceRewardDTO attendanceSlotDTO)
     {
 
         OnAttendanceRewardClaimed?.Invoke(attendanceSlotDTO);

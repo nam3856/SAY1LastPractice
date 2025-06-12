@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
     public GameEventSystem Events { get; private set; } = new GameEventSystem();
     public SaveManager SaveManager { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -22,13 +23,14 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SaveManager = new SaveManager(AccountManager.Instance?.CurrentAccount.Email ?? "DefaultAccountID");
-        LoadAll();
-
         InitManager.Instance.RegisterOnAllInitialized(() =>
         {
+            Debug.Log("All systems initialized. Starting game...");
             CurrencyManager.Instance.OnInitialized();
             AttendanceManager.Instance.CheckTodayAttendance();
+
         });
+        LoadAll();
     }
 
     private void LoadAll()

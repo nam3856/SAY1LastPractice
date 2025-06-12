@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class AttendanceSlot
+public class AttendanceReward
 {
-    public string DayName;
-    public ECurrencyType RewardCurrencyType;
-    public int RewardCurrencyAmount;
-    public bool IsClaimed;
+    public string DayName { get; }
+    public ECurrencyType RewardCurrencyType { get; }
+    public int RewardCurrencyAmount { get; }
+    public bool IsClaimed { get; private set; }
 
-    public AttendanceSlot(string dayName, ECurrencyType rewardCurrencyType, int rewardCurrencyAmount)
+    public AttendanceReward(string dayName, ECurrencyType rewardCurrencyType, int rewardCurrencyAmount)
     {
         if(string.IsNullOrEmpty(dayName))
         {
@@ -26,7 +26,7 @@ public class AttendanceSlot
     {
         return IsClaimed == false;
     }
-    public bool TryClaim()
+    public bool MarkAsClaimedIfPossible()
     {
         if(CanClaimReward() == false)
         {
@@ -36,4 +36,10 @@ public class AttendanceSlot
         IsClaimed = true;
         return true;
     }
+
+    public void ResetClaim()
+    {
+        IsClaimed = false;
+    }
+
 }

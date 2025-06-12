@@ -16,12 +16,4 @@ public class AttendanceDTO
         TotalAttendanceDays = totalAttendanceDays;
         LastAttendanceDate = lastAttendanceDate;
     }
-    public Attendance ToDomain()
-    {
-        return new Attendance(TotalAttendanceDays, LastAttendanceDate);
-    }
-    public AttendanceDTO ToDTO(Attendance attendance)
-    {
-        return new AttendanceDTO(attendance);
-    }
 }

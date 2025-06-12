@@ -50,10 +50,13 @@ public class AchievementManager : MonoBehaviour
         _lastGoldValue = args.NewValue;
     }
 
-    private void OnAttendanceChecked()
+    private void OnAttendanceChecked(bool check)
     {
+        if (check)
+        {
+            Increase(EAchievementCondition.Attendance, 1);
+        }
         // 출석 체크 시 업적 진행도 증가
-        Increase(EAchievementCondition.Attendance, 1);
     }
 
 
