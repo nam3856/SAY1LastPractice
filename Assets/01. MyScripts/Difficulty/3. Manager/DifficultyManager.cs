@@ -7,6 +7,8 @@ public class DifficultyManager : MonoBehaviour
     [SerializeField] private DifficultyConfigSO _config;
     [SerializeField] private List<DifficultyTierSO> _difficultyTiers;
 
+    public static DifficultyManager Instance { get; private set; }
+
     private Difficulty _difficulty;
 
     private float _lastSliderCoefficient = -1f;
@@ -14,6 +16,17 @@ public class DifficultyManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (_config == null || _difficultyTiers == null || _difficultyTiers.Count == 0)
         {
             Debug.LogError("DifficultyManager 초기화 실패: 설정이 비어 있음.");
