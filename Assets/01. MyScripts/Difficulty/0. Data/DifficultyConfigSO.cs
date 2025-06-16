@@ -6,7 +6,12 @@ public class DifficultyConfigSO : ScriptableObject
     [Header("시작 시 난이도 계수 초기값")]
     public float InitialDifficultyCoefficient = 1.0f;
     [Header("시간 경과에 따른 난이도 계수 증가 곡선")]
-    public AnimationCurve DifficultyIncreaseCurve = AnimationCurve.Linear(0, 1, 60, 2);
+    public AnimationCurve DifficultyIncreaseCurve = new AnimationCurve(
+    new Keyframe(0f, 1f),
+    new Keyframe(300f, 5f),
+    new Keyframe(600f, 25f),
+    new Keyframe(2400f, 99f)
+);
     [Header("스테이지 클리어 시 난이도 계수 증가 배율")]
     public float StageClearDifficultyMultiplier = 1.15f;
     [Header("적 체력 스케일링 기본 배율")]

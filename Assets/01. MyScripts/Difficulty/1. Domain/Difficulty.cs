@@ -6,10 +6,10 @@ public class Difficulty
 {
     private DifficultyConfigSO _config;
     private float _currentElapsedTime;
-    private float _cumulativeStageMultiplier;
     private float _currentCoefficient;
     private IReadOnlyList<DifficultyTierSO> _allDifficultyTiers;
     public event Action<DifficultyTierSO> DifficultyTierChanged;
+    private float _stageClearTimeOffset = 0f;
 
     public DifficultyTierSO CurrentActiveTier { get; private set; }
 
@@ -19,7 +19,6 @@ public class Difficulty
         _config = config;
         _allDifficultyTiers = allDifficultyTiers;
         _currentElapsedTime = 0f;
-        _cumulativeStageMultiplier = 1f;
         _currentCoefficient = _config.InitialDifficultyCoefficient;
         UpdateCurrentTier();
     }
@@ -38,20 +37,44 @@ public class Difficulty
     // 스테이지 클리어 시 난이도 계수 증가
     public void StageCleared()
     {
-        _cumulativeStageMultiplier *= _config.StageClearDifficultyMultiplier;
+        float currentCurveValue = _config.DifficultyIncreaseCurve.Evaluate(_currentElapsedTime + _stageClearTimeOffset);
+        float target = _currentCoefficient * _config.StageClearDifficultyMultiplier;
+
+        float newOffset = FindTimeOffsetToReach(target);
+
+        // 계수 상승 이후 티어 갱신
+        _stageClearTimeOffset = newOffset;
         CalculateCurrentCoefficient();
     }
+
 
 
     // 현재 난이도 티어 계산
     private void CalculateCurrentCoefficient()
     {
-        float baseDifficultyFromTime = _config.DifficultyIncreaseCurve.Evaluate(_currentElapsedTime);
-        _currentCoefficient = baseDifficultyFromTime * _cumulativeStageMultiplier;
+        float effectiveTime = _currentElapsedTime + _stageClearTimeOffset;
+        _currentCoefficient = _config.DifficultyIncreaseCurve.Evaluate(effectiveTime);
 
         _currentCoefficient = Mathf.Min(_currentCoefficient, _config.MaxDifficultyCoefficient);
-
         UpdateCurrentTier();
+    }
+
+    private float FindTimeOffsetToReach(float targetValue)
+    {
+        float low = 0f;
+        float high = 2400f;
+
+        while (high - low > 0.1f)
+        {
+            float mid = (low + high) / 2f;
+            float val = _config.DifficultyIncreaseCurve.Evaluate(_currentElapsedTime + mid);
+            if (val < targetValue)
+                low = mid;
+            else
+                high = mid;
+        }
+
+        return low;
     }
 
     private void UpdateCurrentTier()
@@ -108,7 +131,6 @@ public class Difficulty
         return new DifficultyDTO
         (
             _currentElapsedTime,
-            _cumulativeStageMultiplier,
             _currentCoefficient,
             GetDifficultyTierName()
         );
