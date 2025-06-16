@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 public class UI_Difficulty : MonoBehaviour
 {
     [Header("Top Left")]
@@ -46,13 +47,21 @@ public class UI_Difficulty : MonoBehaviour
 
     private void OnTierChanged(DifficultyDTO tier)
     {
-        DifficultyButtons[_currentDifficultyIndex].interactable = false;
-        _currentDifficultyIndex++;
-        if (_currentDifficultyIndex >= DifficultyButtons.Count)
+        // 기존 버튼 비활성화
+        if (_currentDifficultyIndex < DifficultyButtons.Count)
         {
-            return;
+            DifficultyButtons[_currentDifficultyIndex].interactable = false;
+            DifficultyButtons[_currentDifficultyIndex].GetComponent<ButtonTextColorChanger>().UpdateTextColor();
         }
-        DifficultyButtons[_currentDifficultyIndex].interactable = true;
+
+        // EDifficulty enum을 인덱스로 변환
+        _currentDifficultyIndex = (int)tier.CurrentTierEnum;
+
+        if (_currentDifficultyIndex < DifficultyButtons.Count)
+        {
+            DifficultyButtons[_currentDifficultyIndex].interactable = true;
+            DifficultyButtons[_currentDifficultyIndex].GetComponent<ButtonTextColorChanger>().UpdateTextColor();
+        }
     }
     private void OnSliderChanged(float value)
     {
@@ -70,7 +79,7 @@ public class UI_Difficulty : MonoBehaviour
     }
     private void RefreshTop()
     {
-        DifficultyLevelText.text = $"레벨 <b>{(int)_smoothDifficultyLevel}</b>";
+        DifficultyLevelText.text = $"레벨 <b>{(int)_targetDifficultyLevel}</b>";
     }
 
     private void UpdateTime()

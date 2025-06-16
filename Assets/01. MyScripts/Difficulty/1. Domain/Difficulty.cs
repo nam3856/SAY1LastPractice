@@ -132,7 +132,8 @@ public class Difficulty
         (
             _currentElapsedTime,
             _currentCoefficient,
-            GetDifficultyTierName()
+            GetDifficultyTierName(),
+            CurrentActiveTier.DifficultyType
         );
     }
 }

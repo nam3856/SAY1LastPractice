@@ -10,7 +10,7 @@ public class DifficultyManager : MonoBehaviour
     private Difficulty _difficulty;
 
     private float _lastSliderCoefficient = -1f;
-    private const float SliderStep = 0.03f;
+    private const float SliderStep = 0.02f;
 
     private void Awake()
     {
