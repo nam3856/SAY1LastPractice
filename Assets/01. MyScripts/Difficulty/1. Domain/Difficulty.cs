@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Difficulty
@@ -8,6 +9,7 @@ public class Difficulty
     private float _cumulativeStageMultiplier;
     private float _currentCoefficient;
     private IReadOnlyList<DifficultyTierSO> _allDifficultyTiers;
+    public event Action<DifficultyTierSO> DifficultyTierChanged;
 
     public DifficultyTierSO CurrentActiveTier { get; private set; }
 
@@ -70,7 +72,8 @@ public class Difficulty
         if (newTier != null && newTier != CurrentActiveTier)
         {
             CurrentActiveTier = newTier;
-            // 이벤트 발행하기
+
+            DifficultyTierChanged?.Invoke(CurrentActiveTier);
 
         }
     }
