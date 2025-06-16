@@ -7,7 +7,7 @@ public class Difficulty
 
     }
 
-    public Difficulty(DifficultyDataSO difficultyData)
+    public Difficulty(DifficultyTierSO difficultyData)
     {
     }
 }
