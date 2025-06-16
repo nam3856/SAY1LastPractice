@@ -14,6 +14,8 @@ public class AchievementNotifyUI : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.Events.Achievement.OnAchievementUnlocked += EnqueuePopup;
+
+        InitManager.Instance.ReportInitialized("UI_AchievementNotification");
     }
 
     private void OnDestroy()

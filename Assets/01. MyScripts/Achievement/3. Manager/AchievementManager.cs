@@ -30,7 +30,11 @@ public class AchievementManager : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager.Instance.Events.Currency.OnCurrencyChanged -= OnCurrencyChanged;
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.Events.Currency.OnCurrencyChanged -= OnCurrencyChanged;
+            GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked -= OnAttendanceChecked;
+        }
     }
 
     private void OnCurrencyChanged(CurrencyChangedEventArgs args)
@@ -46,11 +50,21 @@ public class AchievementManager : MonoBehaviour
         _lastGoldValue = args.NewValue;
     }
 
+    private void OnAttendanceChecked(bool check)
+    {
+        if (check)
+        {
+            Increase(EAchievementCondition.Attendance, 1);
+        }
+        // 출석 체크 시 업적 진행도 증가
+    }
+
 
     public void Initialize(List<AchievementDTO> savedData)
     {
         _achievements = new List<Achievement>();
         GameManager.Instance.Events.Currency.OnCurrencyChanged += OnCurrencyChanged;
+        GameManager.Instance.Events.Attendance.OnTodayAttendanceChecked += OnAttendanceChecked;
 
         var validIds = new HashSet<string>();
         foreach (var dataSO in _achievementDataList)
@@ -84,6 +98,8 @@ public class AchievementManager : MonoBehaviour
         _lastGoldValue = goldAchievement?.CurrentValue ?? 0;
 
         OnInitialized?.Invoke(GetAllAchievementDTOs());
+
+        InitManager.Instance.ReportInitialized("Achievement");
     }
 
 
@@ -95,7 +111,6 @@ public class AchievementManager : MonoBehaviour
             if (achievement.Condition == condition)
             {
                 achievement.Increase(value);
-
 
                 //업적 완료 확인
                 if (achievement.CanClaimReward())

@@ -17,6 +17,7 @@ public class AchievementSlotUI : MonoBehaviour
     {
         GameManager.Instance.Events.Achievement.OnAchievementUpdated += UpdateUI;
         GameManager.Instance.Events.Achievement.OnAchievementClaimed += UpdateUI;
+
     }
 
     private void OnDestroy()

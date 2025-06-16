@@ -34,6 +34,7 @@ namespace Unity.FPS.UI
         FramerateCounter m_FramerateCounter;
 
         public GameObject AchievementUI;
+        public GameObject AttendanceUI;
 
         void Start()
         {
@@ -109,6 +110,7 @@ namespace Unity.FPS.UI
         {
             MenuRoot.SetActive(active);
             AchievementUI.GetComponent<CanvasGroup>().alpha = active ? 1f : 0f;
+            AttendanceUI.GetComponent<CanvasGroup>().alpha = active ? 1f : 0f;
             if (MenuRoot.activeSelf)
             {
                 Cursor.lockState = CursorLockMode.None;
