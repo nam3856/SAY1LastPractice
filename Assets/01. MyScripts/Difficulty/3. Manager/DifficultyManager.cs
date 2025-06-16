@@ -29,7 +29,7 @@ public class DifficultyManager : MonoBehaviour
     {
         _difficulty.UpdateTime(Time.deltaTime);
 
-        float current = Mathf.Floor(_difficulty.CurrentCoefficient * 10f) / 10f;
+        float current = Mathf.Floor(_difficulty.CurrentCoefficient * 10f) * SliderStep;
         if (!Mathf.Approximately(current, _lastSliderCoefficient))
         {
             _lastSliderCoefficient = current;
