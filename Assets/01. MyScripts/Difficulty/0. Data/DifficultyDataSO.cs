@@ -16,6 +16,6 @@ public class DifficultyDataSO : ScriptableObject
     public float EnemyDamageMultiplier = 1.0f;
     [Header("엘리트 적 스폰 빈도")]
     public float EliteSpawnRate = 0.1f;
-    [Header("보스 적 스폰 빈도")]
-    public float BossSpawnRate = 0.05f;
+    [Header("보스 적 일반스폰 갯수")]
+    public int BossSpawnRate = 0;
 }
