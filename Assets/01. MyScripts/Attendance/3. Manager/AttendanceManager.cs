@@ -10,7 +10,6 @@ public class AttendanceManager : MonoBehaviour
     private Attendance _attendance;
     public static AttendanceManager Instance { get; private set; }
 
-    private int MaxAttendanceDays => _attendanceDataList.Count;
     private void Awake()
     {
         if (Instance == null)
@@ -56,7 +55,6 @@ public class AttendanceManager : MonoBehaviour
         }
         else
         {
-
             GameManager.Instance.Events.Attendance.RaiseTodayAttendanceChecked(false);
         }
     }
