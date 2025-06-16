@@ -1,13 +1,17 @@
-﻿using UnityEngine;
-
-public class DifficultyDTO
+﻿public class DifficultyDTO
 {
-    public DifficultyDTO(Difficulty difficulty)
-    {
+    public float CurrentElapsedTime { get; }
+    public float CurrentCoefficient { get; }
+    public string CurrentTierName { get; }
+    public EDifficulty CurrentTierEnum { get; }
 
-    }
+    public DifficultyDTO() { }
 
-    public DifficultyDTO(DifficultyDataSO difficultyData)
+    public DifficultyDTO(float currentElapsedTime, float currentCoefficient, string currentTierName, EDifficulty currentTierEnum)
     {
+        CurrentElapsedTime = currentElapsedTime;
+        CurrentCoefficient = currentCoefficient;
+        CurrentTierName = currentTierName;
+        CurrentTierEnum = currentTierEnum;
     }
 }
