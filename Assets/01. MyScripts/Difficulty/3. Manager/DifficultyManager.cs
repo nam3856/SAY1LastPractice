@@ -10,7 +10,7 @@ public class DifficultyManager : MonoBehaviour
     private Difficulty _difficulty;
 
     private float _lastSliderCoefficient = -1f;
-    private const float SliderStep = 0.1f;
+    private const float SliderStep = 0.03f;
 
     private void Awake()
     {
@@ -29,8 +29,8 @@ public class DifficultyManager : MonoBehaviour
     {
         _difficulty.UpdateTime(Time.deltaTime);
 
-        float current = Mathf.Floor(_difficulty.CurrentCoefficient * 10f) * SliderStep;
-        if (!Mathf.Approximately(current, _lastSliderCoefficient))
+        float current = _difficulty.CurrentCoefficient;
+        if (Mathf.Abs(current - _lastSliderCoefficient) >= SliderStep)
         {
             _lastSliderCoefficient = current;
             GameManager.Instance.Events.Difficulty.RaiseSliderChanged(current);

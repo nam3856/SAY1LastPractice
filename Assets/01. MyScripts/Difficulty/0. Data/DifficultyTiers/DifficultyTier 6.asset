@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7f7712f4854b44bbae4ba5fb5f43e4, type: 3}
   m_Name: DifficultyTier 6
   m_EditorClassIdentifier: 
-  MinDifficultyCoefficient: 0
-  DifficultyType: 0
-  Name: "\uC26C\uC6C0"
+  MinDifficultyCoefficient: 19
+  DifficultyType: 6
+  Name: "\uC5EC\uB7EC\uBD84\uC774 \uBCF4\uC5EC\uC694"
   EnemyHealthMultiplier: 1
   EnemyDamageMultiplier: 1
   EliteSpawnRate: 0.1

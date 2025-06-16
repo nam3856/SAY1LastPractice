@@ -1,7 +1,8 @@
 using UnityEngine;
 using TMPro;
-
-public class Test : MonoBehaviour
+using System.Collections.Generic;
+using UnityEngine.UI;
+public class UI_Difficulty : MonoBehaviour
 {
     [Header("Top Left")]
     public TextMeshProUGUI DifficultyLevelText;
@@ -18,18 +19,49 @@ public class Test : MonoBehaviour
     [Header("Bottom")]
     public RectTransform DifficultyScrollContent;
     public float DifficultyWitdth = 170f;
+    public List<Button> DifficultyButtons;
+    private int _currentDifficultyIndex = 0;
 
 
-    [Range(1, 99)] public float DifficultyLevel = 1f;
     private float _currentTime = 0f;
 
+    private void Start()
+    {
+        GameManager.Instance.Events.Difficulty.OnSliderChanged += OnSliderChanged;
+        GameManager.Instance.Events.Difficulty.OnTierChanged += OnTierChanged;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.Events.Difficulty.OnSliderChanged -= OnSliderChanged;
+        GameManager.Instance.Events.Difficulty.OnTierChanged -= OnTierChanged;
+    }
     private void Update()
     {
         _currentTime += Time.deltaTime;
+        _smoothDifficultyLevel = Mathf.Lerp(_smoothDifficultyLevel, _targetDifficultyLevel, Time.deltaTime * SmoothSpeed);
 
         Refresh();
     }
-    
+
+    private void OnTierChanged(DifficultyDTO tier)
+    {
+        DifficultyButtons[_currentDifficultyIndex].interactable = false;
+        _currentDifficultyIndex++;
+        if (_currentDifficultyIndex >= DifficultyButtons.Count)
+        {
+            return;
+        }
+        DifficultyButtons[_currentDifficultyIndex].interactable = true;
+    }
+    private void OnSliderChanged(float value)
+    {
+        _targetDifficultyLevel = value;
+    }
+
+    private float _targetDifficultyLevel = 1;
+    private float _smoothDifficultyLevel = 1;
+    public float SmoothSpeed = 5f;
     private void Refresh()
     {
         RefreshTop();
@@ -38,12 +70,14 @@ public class Test : MonoBehaviour
     }
     private void RefreshTop()
     {
-        DifficultyLevelText.text = $"레벨 <b>{(int)DifficultyLevel}</b>";
-        
+        DifficultyLevelText.text = $"레벨 <b>{(int)_smoothDifficultyLevel}</b>";
+    }
+
+    private void UpdateTime()
+    {
         int minutes = (int)(_currentTime / 60f);
         int seconds = (int)(_currentTime % 60f);
         int centiseconds = (int)((_currentTime % 1f) * 100f);
-        
         TImeText.text = $"{minutes:D2}:{seconds:D2}<voffset=0.4em><size=50%>{centiseconds:D2}</size></voffset>";
     }
 
@@ -59,13 +93,16 @@ public class Test : MonoBehaviour
         }
         
         MidScrollContent.anchoredPosition = currentPosition;
+
+        UpdateTime();
     }
 
     private void RefreshBottom()
     {
         Vector2 difficultyPosition = DifficultyScrollContent.anchoredPosition;
-        float multiplier = (DifficultyLevel - 1f) / 3f;
+        float multiplier = (_smoothDifficultyLevel - 1f) / 3f;
         difficultyPosition.x = -DifficultyWitdth * multiplier;
         DifficultyScrollContent.anchoredPosition = difficultyPosition;
     }
+
 }
