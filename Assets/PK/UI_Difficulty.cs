@@ -25,11 +25,13 @@ public class UI_Difficulty : MonoBehaviour
 
 
     private float _currentTime = 0f;
+    private SessionManager _session;
 
     private void Start()
     {
         GameManager.Instance.Events.Difficulty.OnSliderChanged += OnSliderChanged;
         GameManager.Instance.Events.Difficulty.OnTierChanged += OnTierChanged;
+        _session = SessionManager.Instance;
     }
 
     private void OnDestroy()
@@ -39,7 +41,10 @@ public class UI_Difficulty : MonoBehaviour
     }
     private void Update()
     {
-        _currentTime += Time.deltaTime;
+        if (_session != null && _session.CurrentSession != null)
+        {
+            _currentTime = _session.CurrentSession.ElapsedPlayTime;
+        }
         _smoothDifficultyLevel = Mathf.Lerp(_smoothDifficultyLevel, _targetDifficultyLevel, Time.deltaTime * SmoothSpeed);
 
         Refresh();
