@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 6201668681082858957}
   - component: {fileID: 7535410035992931416}
   - component: {fileID: 3459633329091342438}
+  - component: {fileID: 2244995847759542556}
   m_Layer: 5
   m_Name: ranking_prefab
   m_TagString: Untagged
@@ -394,6 +395,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &2244995847759542556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5985272610941008917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d58f83953a46d574596c4b536ee51abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rankText: {fileID: 452267476523799272}
+  nameText: {fileID: 3667559643884331369}
+  scoreText: {fileID: 1341386152397793056}
 --- !u!1 &6003892763894407335
 GameObject:
   m_ObjectHideFlags: 0
