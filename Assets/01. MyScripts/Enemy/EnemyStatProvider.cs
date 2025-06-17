@@ -1,3 +1,4 @@
+ï»¿using Unity.FPS.AI;
 using Unity.FPS.Game;
 using UnityEngine;
 
@@ -20,27 +21,33 @@ public class EnemyStatProvider : MonoBehaviour
 
     public void ApplyStatsFromDifficulty()
     {
-        // Ã¼·Â ºñÀ² À¯Áö
+        // ì²´ë ¥ ë¹„ìœ¨ ìœ ì§€
         float currentRatio = _health.CurrentHealth / _health.MaxHealth;
 
-        // DifficultyManager¿¡¼­ »õ·Î¿î Ã¼·Â/°ø°İ·Â ¹Ş¾Æ¿À±â
+        // DifficultyManagerì—ì„œ ìƒˆë¡œìš´ ì²´ë ¥/ê³µê²©ë ¥ ë°›ì•„ì˜¤ê¸°
         var difficultyManager = GameManager.Instance.GetComponent<DifficultyManager>();
         if (difficultyManager == null)
         {
-            Debug.LogError("[EnemyStatProvider] DifficultyManager¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("[EnemyStatProvider] DifficultyManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
 
-        // ³­ÀÌµµ ¹İ¿µµÈ ÃÖ´ë Ã¼·Â °è»ê
-        float newMaxHealth = difficultyManager.GetEnemyHealth(_initialMaxHealth);
-        _health.MaxHealth = newMaxHealth;
+        // ë‚œì´ë„ ë°˜ì˜ëœ ìµœëŒ€ ì²´ë ¥ ê³„ì‚°
+        var enemies = FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
+        foreach ( var enemy in enemies)
+        {
+            var health = enemy.GetHealthInfo();
+            enemy.SetHealth(difficultyManager.GetEnemyHealth(health));
+        }
+        //float newMaxHealth = difficultyManager.GetEnemyHealth(_initialMaxHealth);
+        //_health.MaxHealth = newMaxHealth;
 
-        // ÇöÀç Ã¼·ÂÀº ÀÌÀü ºñÀ² À¯ÁöÇÏ¸é¼­ °»½Å
-        _health.CurrentHealth = newMaxHealth * currentRatio;
+        // í˜„ì¬ ì²´ë ¥ì€ ì´ì „ ë¹„ìœ¨ ìœ ì§€í•˜ë©´ì„œ ê°±ì‹ 
+        //_health.CurrentHealth = newMaxHealth * currentRatio;
 
-        // °ø°İ·Â °»½Å
+        // ê³µê²©ë ¥ ê°±ì‹ 
 
 
-        //Debug.Log($"[EnemyStatProvider] Ã¼·Â {newMaxHealth}, °ø°İ·Â {newDamage} Àû¿ë ¿Ï·á");
+        //Debug.Log($"[EnemyStatProvider] ì²´ë ¥ {newMaxHealth}, ê³µê²©ë ¥ {newDamage} ì ìš© ì™„ë£Œ");
     }
 }

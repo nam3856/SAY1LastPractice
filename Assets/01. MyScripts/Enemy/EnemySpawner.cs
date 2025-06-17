@@ -1,4 +1,4 @@
-using Redcode.Pools;
+ï»¿using Redcode.Pools;
 using Unity.FPS.AI;
 using UnityEngine;
 
@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
 
     private DifficultyManager _difficultyManager;
 
-    // ³­ÀÌµµ ¹İ¿µ¿ë º¯¼ö
+    // ë‚œì´ë„ ë°˜ì˜ìš© ë³€ìˆ˜
     private float _eliteSpawnChance = 0.1f;
     private int _bossAsNormalCount = 0;
 
@@ -39,16 +39,16 @@ public class EnemySpawner : MonoBehaviour
 
         if (_difficultyManager == null)
         {
-            Debug.LogError("[EnemySpawner] DifficultyManager¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("[EnemySpawner] DifficultyManagerë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             enabled = false;
             return;
         }
 
-        // ³­ÀÌµµ º¯°æ ÀÌº¥Æ® ±¸µ¶
+        // ë‚œì´ë„ ë³€ê²½ ì´ë²¤íŠ¸ êµ¬ë…
         GameManager.Instance.Events.Difficulty.OnTierChanged += OnDifficultyUpdated;
         //GameManager.Instance.Events.Stage.OnStageChanged += OnStageChanged;
 
-        // ÃÊ±â°ª ¼¼ÆÃ
+        // ì´ˆê¸°ê°’ ì„¸íŒ…
         RefreshDifficultySettings();
     }
 
@@ -97,7 +97,7 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
-        Debug.Log($"[EnemySpawner] ½ºÅ×ÀÌÁö ½ÃÀÛ ½Ã º¸½º {_bossAsNormalCount}¸¶¸® ¼ÒÈ¯µÊ.");
+        Debug.Log($"[EnemySpawner] ìŠ¤í…Œì´ì§€ ì‹œì‘ ì‹œ ë³´ìŠ¤ {_bossAsNormalCount}ë§ˆë¦¬ ì†Œí™˜ë¨.");
     }
 
     private void SetupEnemy(EnemyController enemy)
@@ -108,7 +108,7 @@ public class EnemySpawner : MonoBehaviour
         enemy.PatrolPath = AssignedPath;
         enemy.SetPool(GetPoolByType(enemy));
 
-        // ³­ÀÌµµ ¹İ¿µµÈ ½ºÅÈ °»½Å
+        // ë‚œì´ë„ ë°˜ì˜ëœ ìŠ¤íƒ¯ ê°±ì‹ 
         //enemy.RefreshStats();
 
         _enemyCount++;
@@ -130,17 +130,17 @@ public class EnemySpawner : MonoBehaviour
     {
         RefreshDifficultySettings();
 
-        // ÀÌ¹Ì »ı¼ºµÈ Àûµé »óÅÂµµ °»½Å
-        foreach (var enemy in FindObjectsOfType<EnemyController>())
+        // ì´ë¯¸ ìƒì„±ëœ ì ë“¤ ìƒíƒœë„ ê°±ì‹ 
+        foreach (var enemy in FindObjectsByType<EnemyController>(FindObjectsSortMode.None))
         {
-            // ÀûÀÇ ½ºÅÈÀ» ³­ÀÌµµ¿¡ ¸Â°Ô °»½Å
+            // ì ì˜ ìŠ¤íƒ¯ì„ ë‚œì´ë„ì— ë§ê²Œ ê°±ì‹ 
             //enemy.EnemyStatProvider.RefreshStats();
         }
     }
 
     private void RefreshDifficultySettings()
     {
-        _eliteSpawnChance = _difficultyManager.GetEliteSpawnChance(0.1f);
+        _eliteSpawnChance = _difficultyManager.GetEliteSpawnChance();
         _bossAsNormalCount = _difficultyManager.GetBossAsNormalEnemyCount();
     }
 

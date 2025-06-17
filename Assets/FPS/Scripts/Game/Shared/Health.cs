@@ -43,6 +43,12 @@ namespace Unity.FPS.Game
             }
         }
 
+        public void SetHealth(float maxHealth)
+        {
+            float healthBefore = GetRatio();
+            MaxHealth = maxHealth;
+            CurrentHealth = MaxHealth * healthBefore;
+        }
         public void TakeDamage(float damage, GameObject damageSource)
         {
             if (Invincible)

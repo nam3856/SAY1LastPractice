@@ -6,20 +6,19 @@ public static class RestartManager
 {
     public static void Restart(string sceneName)
     {
-        DestroySingletons();
         EventManager.Clear();
         SceneManager.LoadScene(sceneName);
+        DestroySingletons();
     }
 
     public static void DestroySingletons()
     {
-        if (GameManager.Instance != null)
-            Object.Destroy(GameManager.Instance.gameObject);
-
-        if (CurrencyManager.Instance != null)
-            Object.Destroy(CurrencyManager.Instance.gameObject);
-
-        if (AchievementManager.Instance != null)
-            Object.Destroy(AchievementManager.Instance.gameObject);
+        foreach (var obj in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+        {
+            if (obj.scene.name == "DontDestroyOnLoad")
+            {
+                Object.Destroy(obj);
+            }
+        }
     }
 }

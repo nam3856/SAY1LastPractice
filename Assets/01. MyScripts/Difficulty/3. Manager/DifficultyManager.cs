@@ -79,8 +79,8 @@ public class DifficultyManager : MonoBehaviour
     public float GetEnemyDamage(float baseDamage)
         => _difficulty.GetScaledEnemyDamage(baseDamage);
 
-    public float GetEliteSpawnChance(float baseChance)
-        => _difficulty.GetEliteSpawnChance(baseChance);
+    public float GetEliteSpawnChance()
+        => _difficulty.GetEliteSpawnChance();
 
     public int GetBossAsNormalEnemyCount()
         => _difficulty.GetBossAsNormalEnemyCount();

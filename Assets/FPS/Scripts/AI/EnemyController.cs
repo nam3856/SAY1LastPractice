@@ -566,5 +566,23 @@ namespace Unity.FPS.AI
                 m_LastTimeWeaponSwapped = Mathf.NegativeInfinity;
             }
         }
+
+        public float GetHealthInfo()
+        {
+            if (m_Health != null)
+            {
+                return m_Health.MaxHealth;
+            }
+            return 0;
+        }
+
+        public void SetHealth(float health)
+        {
+            if (m_Health != null)
+            {
+                m_Health.SetHealth(health);
+            }
+        }
+
     }
 }

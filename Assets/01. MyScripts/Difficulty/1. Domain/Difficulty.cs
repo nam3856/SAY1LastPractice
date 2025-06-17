@@ -111,9 +111,9 @@ public class Difficulty
         return baseDamage * (1 + (_currentCoefficient - 1) * _config.BaseEnemyDamageScale) * CurrentActiveTier.EnemyDamageMultiplier;
     }
 
-    public float GetEliteSpawnChance(float baseChance)
+    public float GetEliteSpawnChance()
     {
-        return baseChance + (_currentCoefficient - 1) * _config.BaseEliteSpawnChanceScale + CurrentActiveTier.EliteSpawnRate;
+        return (_currentCoefficient - 1) * _config.BaseEliteSpawnChanceScale + CurrentActiveTier.EliteSpawnRate;
     }
 
     public int GetBossAsNormalEnemyCount()
