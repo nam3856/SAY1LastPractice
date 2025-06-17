@@ -35,8 +35,8 @@ namespace Unity.FPS.Game
 
         void Awake()
         {
-            EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
-            EventManager.AddListener<PlayerDeathEvent>(OnPlayerDeath);
+            //EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
+            //EventManager.AddListener<PlayerDeathEvent>(OnPlayerDeath);
         }
 
         void Start()
@@ -108,8 +108,8 @@ namespace Unity.FPS.Game
 
         void OnDestroy()
         {
-            EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
-            EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
+            //EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
+            //EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
         }
     }
 }

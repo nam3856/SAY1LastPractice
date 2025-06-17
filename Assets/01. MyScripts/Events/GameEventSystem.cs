@@ -6,4 +6,8 @@ public class GameEventSystem
     public AchievementEventManager Achievement { get; } = new AchievementEventManager();
     public AttendanceEventManager Attendance { get; } = new AttendanceEventManager();
     public DifficultyEventManager Difficulty { get; } = new DifficultyEventManager();
+    public ScoreEventManager Score { get; } = new ScoreEventManager();
+    public SessionEventManager Session { get; } = new SessionEventManager();
+
+    public RankingEventManager Ranking { get; } = new RankingEventManager();
 }

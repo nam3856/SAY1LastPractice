@@ -5,6 +5,8 @@ public class SaveManager
     private CurrencyRepository _currencyRepository = new CurrencyRepository();
     private AchievementRepository _achievementRepository = new AchievementRepository();
     private AttendanceRepository _attendanceRepository = new AttendanceRepository();
+    private ScoreRepository _scoreRepository = new ScoreRepository();
+    private RankingRepository _rankingRepository = new RankingRepository();
 
     private string _accountID;
 
@@ -62,6 +64,47 @@ public class SaveManager
         var attendanceData = AttendanceManager.Instance.GetCurrentAttendanceDTO();
         _attendanceRepository.SaveAttendance(attendanceData);
         _attendanceRepository.SaveRewards(slotsData);
+    }
 
+    public void SaveScoreData()
+    {
+        var scoreData = ScoreManager.Instance.GetScoreDTO();
+        _scoreRepository.Save(scoreData, _accountID);
+    }
+
+    public void LoadScoreData()
+    {
+        var scoreData = _scoreRepository.Load(_accountID);
+        if (scoreData != null)
+        {
+            ScoreManager.Instance.Initialize(_accountID, scoreData);
+            Debug.Log("점수 데이터 로드 완료");
+        }
+        else
+        {
+            Debug.Log("점수 데이터가 없습니다. 없이 초기화합니다.");
+            ScoreManager.Instance.Initialize(_accountID);
+        }
+    }
+
+    public void SaveRankingData()
+    {
+        var rankingList = RankingManager.Instance.GetTopRankings();
+        _rankingRepository.Save(rankingList);
+    }
+
+    public void LoadRankingData()
+    {
+        var rankingList = _rankingRepository.Load();
+        if (rankingList.Count > 0)
+        {
+            RankingManager.Instance.Initialize(rankingList);
+            Debug.Log("랭킹 데이터 로드 완료");
+        }
+        else
+        {
+            RankingManager.Instance.Initialize();
+            Debug.Log("랭킹 데이터가 없습니다. 초기화합니다.");
+        }
     }
 }

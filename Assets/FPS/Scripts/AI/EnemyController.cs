@@ -125,6 +125,9 @@ namespace Unity.FPS.AI
         [Header("Enemy Info")] public EEnemyType EnemyType = EEnemyType.Normal;
         [Tooltip("Gold rewarded when this enemy dies")]
         public int GoldReward = 100;
+        [Tooltip("Score")]
+        public int ScoreReward = 10;
+
         [Tooltip("Achievement progress increased on death")]
         public EAchievementCondition KillCondition = EAchievementCondition.DroneKillCount;
 

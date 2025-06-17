@@ -67,7 +67,10 @@ public class AccountManager : MonoBehaviour
         return false;
     }
 
-
-
-
+    public string GetNicknameByPlayerId(string playerId)
+    {
+        AccountSaveData saveData = _repository.Find(playerId);
+        var nickname = saveData != null ? saveData.Nickname : "Unknown";
+        return nickname;
+    }
 }

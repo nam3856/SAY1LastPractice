@@ -21,8 +21,6 @@ public class AccountRepository
 
         return JsonUtility.FromJson<AccountSaveData>(PlayerPrefs.GetString(SAVE_PREFIX + email));
     }
-
-
 }
 
 public class AccountSaveData

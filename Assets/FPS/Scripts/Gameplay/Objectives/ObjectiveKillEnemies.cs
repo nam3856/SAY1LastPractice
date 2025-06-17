@@ -14,7 +14,11 @@ namespace Unity.FPS.Gameplay
         [Tooltip("Start sending notification about remaining enemies when this amount of enemies is left")]
         public int NotificationEnemiesRemainingThreshold = 3;
 
+        [Tooltip("보스 처치 미션?")]
+        public bool IsBossKillObjective = false;
+
         int m_KillTotal;
+
 
         protected override void Start()
         {
@@ -35,6 +39,23 @@ namespace Unity.FPS.Gameplay
         {
             if (IsCompleted)
                 return;
+            if(ScoreManager.Instance != null)
+                ScoreManager.Instance.AddScore(evt.ScoreReward);
+            else
+            {
+                Debug.LogWarning("ScoreManager is not initialized. Cannot add score for enemy kill.");
+            }
+            if (IsBossKillObjective && !evt.IsBoss)
+            {
+                Debug.Log("보스 잡는 미션인데 보스잡은게 아니라 return함");
+                return;
+            }
+
+            if(IsBossKillObjective && evt.IsBoss)
+            {
+                CompleteObjective(string.Empty, GetUpdatedCounterAmount(), "Objective complete : " + Title);
+                return;
+            }
 
             m_KillTotal++;
 

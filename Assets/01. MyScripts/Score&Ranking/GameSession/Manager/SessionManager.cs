@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.FPS.Game;
+using UnityEngine;
 
 public class SessionManager : MonoBehaviour
 {
@@ -14,6 +15,17 @@ public class SessionManager : MonoBehaviour
             return;
         }
         Instance = this;
+        EventManager.AddListener<AllObjectivesCompletedEvent>(OnClear);
+        EventManager.AddListener<PlayerDeathEvent>(OnGameOver);
+    }
+    void OnDestroy()
+    {
+        EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnClear);
+        EventManager.RemoveListener<PlayerDeathEvent>(OnGameOver);
+    }
+    private void Start()
+    {
+        
     }
 
     private void Update()
@@ -33,6 +45,15 @@ public class SessionManager : MonoBehaviour
         CurrentSession.Start();
     }
 
-    public void OnClear() => CurrentSession.MarkCleared();
-    public void OnGameOver() => CurrentSession.End();
+    public void OnClear(AllObjectivesCompletedEvent evt)
+    {
+        CurrentSession.MarkCleared();
+        CurrentSession.End();
+        GameManager.Instance.Events.Session.RaiseSessionEnded(CurrentSession.ToDTO());
+    }
+    public void OnGameOver(PlayerDeathEvent evt)
+    {
+        CurrentSession.End();
+        GameManager.Instance.Events.Session.RaiseSessionEnded(CurrentSession.ToDTO());
+    }
 }

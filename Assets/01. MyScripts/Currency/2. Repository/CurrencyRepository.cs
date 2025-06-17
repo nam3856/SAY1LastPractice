@@ -1,7 +1,5 @@
-﻿using NUnit.Framework;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 // Repository: 데이터의 영속성을 보장한다.
 // 영속성: 프로그램을 종료해도 데이터가 보존되는 것

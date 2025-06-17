@@ -29,6 +29,8 @@ namespace Unity.FPS.AI
 
             EnemyKillEvent evt = Events.EnemyKillEvent;
             evt.Enemy = enemyKilled.gameObject;
+            evt.IsBoss = enemyKilled.EnemyType == EEnemyType.Boss;
+            evt.ScoreReward = enemyKilled.ScoreReward;
             evt.RemainingEnemyCount = enemiesRemainingNotification;
             EventManager.Broadcast(evt);
 
