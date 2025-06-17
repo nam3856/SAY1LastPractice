@@ -1294,9 +1294,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30bd133e8a6687b48a8d4375100fe0ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NormalEnemyPrefab: {fileID: 0}
-  EliteEnemyPrefab: {fileID: 0}
-  BossEnemyPrefab: {fileID: 0}
+  NormalEnemyPrefab: {fileID: 9087143436424816424, guid: 25a1b0efadb966e44889fce712c8ff8d,
+    type: 3}
+  EliteEnemyPrefab: {fileID: 9087143436424816424, guid: 607878b64e927124b91e173011ff8640,
+    type: 3}
+  BossEnemyPrefab: {fileID: 9087143436424816424, guid: e29d43f43cc5d82499dd9926e01847d3,
+    type: 3}
   MaxEnemies: 10
   SpawnInterval: 3
   AssignedPath: {fileID: 2729281213105387549}
