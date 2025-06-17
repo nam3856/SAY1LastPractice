@@ -3,6 +3,7 @@ using Unity.FPS.Gameplay;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Unity.FPS.UI
 {
@@ -35,6 +36,13 @@ namespace Unity.FPS.UI
 
         public GameObject AchievementUI;
         public GameObject AttendanceUI;
+        public GameObject OptionUI;
+
+        private CanvasGroup _achievementCanvasGroup;
+        private CanvasGroup _attendanceCanvasGroup;
+        private CanvasGroup _optionCanvasGroup;
+
+        private Stack<GameObject> _uiStack = new Stack<GameObject>();
 
         void Start()
         {
@@ -61,12 +69,16 @@ namespace Unity.FPS.UI
 
             FramerateToggle.isOn = m_FramerateCounter.UIText.gameObject.activeSelf;
             FramerateToggle.onValueChanged.AddListener(OnFramerateCounterChanged);
+
+            _achievementCanvasGroup = AchievementUI.GetComponent<CanvasGroup>();
+            _attendanceCanvasGroup = AttendanceUI.GetComponent<CanvasGroup>();
+            _optionCanvasGroup = OptionUI.GetComponent<CanvasGroup>();
         }
 
         void Update()
         {
             // Lock cursor when clicking outside of menu
-            if (!MenuRoot.activeSelf && Input.GetMouseButtonDown(0))
+            if (!MenuRoot.activeSelf && Input.GetMouseButtonDown(0) && _achievementCanvasGroup.alpha == 0 && _attendanceCanvasGroup.alpha == 0)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
@@ -81,14 +93,23 @@ namespace Unity.FPS.UI
             if (Input.GetButtonDown(GameConstants.k_ButtonNamePauseMenu)
                 || (MenuRoot.activeSelf && Input.GetButtonDown(GameConstants.k_ButtonNameCancel)))
             {
-                if (ControlImage.activeSelf)
+                if(_uiStack.Count == 0)
                 {
-                    ControlImage.SetActive(false);
-                    return;
+                    _uiStack.Push(MenuRoot);
+                    SetPauseMenuActivation(true);
                 }
-
-                SetPauseMenuActivation(!MenuRoot.activeSelf);
-
+                else
+                {
+                    var topUI = _uiStack.Pop();
+                    if (topUI == MenuRoot)
+                    {
+                        SetPauseMenuActivation(false);
+                    }
+                    else
+                    {
+                        DeactiveUI(topUI);
+                    }
+                }
             }
 
             if (Input.GetAxisRaw(GameConstants.k_AxisNameVertical) != 0)
@@ -101,6 +122,21 @@ namespace Unity.FPS.UI
             }
         }
 
+        private static void DeactiveUI(GameObject topUI)
+        {
+            var topUIComponent = topUI.GetComponent<CanvasGroup>();
+            if (topUIComponent != null)
+            {
+                topUIComponent.alpha = 0f;
+                topUIComponent.interactable = false;
+                topUIComponent.blocksRaycasts = false;
+            }
+            else
+            {
+                topUI.SetActive(false);
+            }
+        }
+
         public void ClosePauseMenu()
         {
             SetPauseMenuActivation(false);
@@ -109,8 +145,6 @@ namespace Unity.FPS.UI
         void SetPauseMenuActivation(bool active)
         {
             MenuRoot.SetActive(active);
-            AchievementUI.GetComponent<CanvasGroup>().alpha = active ? 1f : 0f;
-            AttendanceUI.GetComponent<CanvasGroup>().alpha = active ? 1f : 0f;
             if (MenuRoot.activeSelf)
             {
                 Cursor.lockState = CursorLockMode.None;
@@ -127,8 +161,75 @@ namespace Unity.FPS.UI
                 Time.timeScale = 1f;
                 AudioUtility.SetMasterVolume(1);
             }
-
         }
+
+        bool _achievementButtonClicked = false;
+        bool _attendanceButtonClicked = false;
+        bool _optionButtonClicked = false;
+        public void OnAchievementButtonClicked()
+        {
+            _achievementButtonClicked = !_achievementButtonClicked;
+            _achievementCanvasGroup.alpha = _achievementButtonClicked?1f:0f;
+            _achievementCanvasGroup.interactable = _achievementButtonClicked;
+            _achievementCanvasGroup.blocksRaycasts = _achievementButtonClicked;
+            if (_achievementButtonClicked)
+            {
+                _uiStack.Push(AchievementUI);
+            }
+            else if (_uiStack.Count > 0)
+            {
+                _uiStack.Pop();
+            }
+        }
+
+        public void OnAttendanceButtonClicked()
+        {
+            _attendanceButtonClicked = !_attendanceButtonClicked;
+            _attendanceCanvasGroup.alpha = _attendanceButtonClicked?1f:0f;
+            _attendanceCanvasGroup.interactable = _attendanceButtonClicked;
+            _attendanceCanvasGroup.blocksRaycasts = _attendanceButtonClicked;
+            if (_attendanceButtonClicked)
+            {
+                _uiStack.Push(AttendanceUI);
+            }
+            else if (_uiStack.Count > 0)
+            {
+                _uiStack.Pop();
+            }
+        }
+
+        public void OnExitButtonClicked()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+
+        public void OnOptionButtonClicked()
+        {
+            _optionButtonClicked = !_optionButtonClicked;
+            _optionCanvasGroup.alpha = _optionButtonClicked ? 1f : 0f;
+            _optionCanvasGroup.interactable = _optionButtonClicked;
+            _optionCanvasGroup.blocksRaycasts = _optionButtonClicked;
+            if(_optionButtonClicked)
+            {
+                _uiStack.Push(OptionUI);
+            }
+            else if (_uiStack.Count > 0)
+            {
+                while(_uiStack.Count > 0 && _uiStack.Peek() != OptionUI)
+                {
+                    _uiStack.Pop();
+                }
+                if (_uiStack.Count > 0 && _uiStack.Peek() == OptionUI)
+                {
+                    _uiStack.Pop();
+                }
+            }
+        }
+
 
         void OnMouseSensitivityChanged(float newValue)
         {
@@ -153,6 +254,15 @@ namespace Unity.FPS.UI
         public void OnShowControlButtonClicked(bool show)
         {
             ControlImage.SetActive(show);
+            if (show)
+            {
+                _uiStack.Push(ControlImage);
+            }
+            else if(_uiStack.Count > 0 && _uiStack.Peek() == ControlImage)
+            {
+                _uiStack.Pop();
+            }
+
         }
     }
 }
