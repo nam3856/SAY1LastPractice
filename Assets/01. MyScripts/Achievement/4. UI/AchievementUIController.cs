@@ -36,8 +36,6 @@ public class AchievementUIController : MonoBehaviour
     private void OnAchievementInitialized(List<AchievementDTO> achievements)
     {
         BuildSlots(achievements);
-
-        canvasGroup.alpha = 0f;
     }
 
     private void Refresh(AchievementDTO achievement)
