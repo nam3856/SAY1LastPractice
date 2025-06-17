@@ -11,6 +11,7 @@ public class UI_Ranking : MonoBehaviour
     private void Start()
     {
         InitEmptyRanking();
+        //RankingManager.Instance.OnRankingUpdated += UpdateRanking;
     }
 
     private void InitEmptyRanking()
