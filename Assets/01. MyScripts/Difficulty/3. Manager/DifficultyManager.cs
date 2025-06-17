@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class DifficultyManager : MonoBehaviour
@@ -88,9 +87,6 @@ public class DifficultyManager : MonoBehaviour
 
     public DifficultyDTO ToDTO()
         => _difficulty.ToDTO();
-
-
-
 
 
     //============================================
