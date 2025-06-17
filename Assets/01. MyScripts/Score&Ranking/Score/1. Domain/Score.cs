@@ -76,6 +76,10 @@ public class Score
         }
         else if (Currentscore == Highscore)
         {
+            if(_previousScore == null)
+            {
+                return true; // 이전 스코어가 없으면 현재 스코어가 최고 점수
+            }
             // 현재 스코어가 최고 점수와 같을 경우 클리어 여부로 결정
             if (IsCleared && !_previousScore.IsCleared)
             {

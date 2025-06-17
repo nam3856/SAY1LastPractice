@@ -454,6 +454,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 163309527}
+  - component: {fileID: 163309528}
   m_Layer: 0
   m_Name: SessionManager
   m_TagString: Untagged
@@ -476,6 +477,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &163309528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163309526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcdff3e23ebea5245b77348ab51d706d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &215753922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,6 +1699,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 640138163}
+  - component: {fileID: 640138164}
   m_Layer: 0
   m_Name: ScoreManager
   m_TagString: Untagged
@@ -1708,6 +1722,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &640138164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640138162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b457b33016e0089469941ecb3c76b8de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &667004388
 GameObject:
   m_ObjectHideFlags: 0
@@ -3550,6 +3576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 737344624}
+  - component: {fileID: 737344625}
   m_Layer: 0
   m_Name: RankingManager
   m_TagString: Untagged
@@ -3572,6 +3599,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &737344625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 737344623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f77220b8c59885544ad88305a5f4e287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxRankCount: 10
 --- !u!224 &759671775 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1567544280196189687, guid: c996b53e9f849234393d1e90f68d1679,

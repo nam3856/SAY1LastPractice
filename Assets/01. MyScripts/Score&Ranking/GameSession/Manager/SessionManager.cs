@@ -25,7 +25,7 @@ public class SessionManager : MonoBehaviour
     }
     private void Start()
     {
-        
+        OnStart();
     }
 
     private void Update()
@@ -43,6 +43,7 @@ public class SessionManager : MonoBehaviour
     public void OnStart()
     {
         CurrentSession.Start();
+        GameManager.Instance.Events.Session.RaiseSessionStarted();
     }
 
     public void OnClear(AllObjectivesCompletedEvent evt)

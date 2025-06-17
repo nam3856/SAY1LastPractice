@@ -27,7 +27,7 @@
         Highscore = scoreSaveModel.Score;
         IsCleared = scoreSaveModel.IsCleared;
         ElapsedPlayTime = scoreSaveModel.ElapsedTime;
-        Nickname = AccountManager.Instance.GetNicknameByPlayerId(PlayerId);
+        Nickname = AccountManager.Instance?.GetNicknameByPlayerId(PlayerId)??"Unknown";
     }
 
     public Score ToDomain()

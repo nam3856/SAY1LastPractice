@@ -96,7 +96,7 @@ public class SaveManager
     public void LoadRankingData()
     {
         var rankingList = _rankingRepository.Load();
-        if (rankingList.Count > 0)
+        if (rankingList == null||rankingList.Count > 0)
         {
             RankingManager.Instance.Initialize(rankingList);
             Debug.Log("랭킹 데이터 로드 완료");

@@ -33,10 +33,13 @@ namespace Unity.FPS.Game
         float m_TimeLoadEndGameScene;
         string m_SceneToLoad;
 
+        private bool _hasShownRankingUI = false;
+        private bool _shouldLoadSceneAfterRanking = false;
+
         void Awake()
         {
-            //EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
-            //EventManager.AddListener<PlayerDeathEvent>(OnPlayerDeath);
+            EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
+            EventManager.AddListener<PlayerDeathEvent>(OnPlayerDeath);
         }
 
         void Start()
@@ -50,18 +53,30 @@ namespace Unity.FPS.Game
             {
                 float timeRatio = 1 - (m_TimeLoadEndGameScene - Time.time) / EndSceneLoadDelay;
                 EndGameFadeCanvasGroup.alpha = timeRatio;
-
                 AudioUtility.SetMasterVolume(1 - timeRatio);
 
-                // See if it's time to load the end scene (after the delay)
                 if (Time.time >= m_TimeLoadEndGameScene)
                 {
-                    SceneManager.LoadScene(m_SceneToLoad);
-                    GameIsEnding = false;
+                    if (!_hasShownRankingUI)
+                    {
+                        // 페이드 끝나면 랭킹 UI 띄우고 대기
+                        //RankingUI.Instance.Show(OnRankingClosed);
+                        _hasShownRankingUI = true;
+                        _shouldLoadSceneAfterRanking = true;
+                        GameIsEnding = false; // 씬 이동 대기 상태로 전환
+                    }
                 }
             }
         }
 
+        void OnRankingClosed()
+        {
+            if (_shouldLoadSceneAfterRanking)
+            {
+                SceneManager.LoadScene(m_SceneToLoad);
+                _shouldLoadSceneAfterRanking = false;
+            }
+        }
         void OnAllObjectivesCompleted(AllObjectivesCompletedEvent evt) => EndGame(true);
         void OnPlayerDeath(PlayerDeathEvent evt) => EndGame(false);
 
@@ -77,7 +92,7 @@ namespace Unity.FPS.Game
             if (win)
             {
                 m_SceneToLoad = WinSceneName;
-                m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay + DelayBeforeFadeToBlack;
+                m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay;
 
                 // play a sound on win
                 var audioSource = gameObject.AddComponent<AudioSource>();
@@ -108,8 +123,8 @@ namespace Unity.FPS.Game
 
         void OnDestroy()
         {
-            //EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
-            //EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
+            EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
+            EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
         }
     }
 }

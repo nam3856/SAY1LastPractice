@@ -116,9 +116,20 @@ public class EnemySpawner : MonoBehaviour
 
     private Pool<EnemyController> GetPoolByType(EnemyController enemy)
     {
-        if (enemy == NormalEnemyPrefab) return _normalPool;
-        if (enemy == EliteEnemyPrefab) return _elitePool;
-        return _bossPool;
+        if (enemy.EnemyType == EEnemyType.Normal)
+        {
+            return _normalPool;
+        }
+        if (enemy.EnemyType == EEnemyType.Glasses)
+        {
+            return _elitePool;
+        }
+        if (enemy.EnemyType==EEnemyType.Boss)
+        {
+            return _bossPool;
+        }
+        Debug.LogError($"[EnemySpawner] 알 수 없는 적 타입: {enemy.EnemyType}");
+        return null;
     }
 
     public void OnEnemyDied()
