@@ -1,13 +1,24 @@
-﻿using UnityEngine;
-[System.Serializable]
+﻿using Firebase.Firestore;
+using UnityEngine;
+[FirestoreData]
 public class RankingEntry
 {
-    public string PlayerId;
-    public string Nickname;
-    public int Score;
-    public bool IsCleared;
-    public float ElapsedPlayTime;
+    [FirestoreProperty]
+    public string PlayerId { get; set; }
 
+    [FirestoreProperty]
+    public string Nickname { get; set; }
+
+    [FirestoreProperty]
+    public int Score { get; set; }
+
+    [FirestoreProperty]
+    public bool IsCleared { get; set; }
+
+    [FirestoreProperty]
+    public float ElapsedPlayTime { get; set; }
+
+    public RankingEntry() { }
     public RankingEntry(ScoreDTO dto)
     {
         PlayerId = dto.PlayerId;

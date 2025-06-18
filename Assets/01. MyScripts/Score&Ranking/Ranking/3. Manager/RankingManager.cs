@@ -27,7 +27,11 @@ public class RankingManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void Start()
+    {
 
+        Initialize();
+    }
     public void Initialize(List<RankingEntry> rankingList = null)
     {
         if (rankingList == null)
@@ -84,14 +88,32 @@ public class RankingManager : MonoBehaviour
 
     public async Task<List<RankingEntry>> GetTopRankings()
     {
-        var snapshot = await _db.Collection(COLLECTION_NAME)
-        .OrderByDescending("Score")
-        .OrderByDescending("IsCleared")
-        .OrderBy("ElapsedPlayTime")
-        .Limit(MaxRankCount)
-        .GetSnapshotAsync();
+        try
+        {
+            Debug.Log("Firestore 랭킹 쿼리 시작");
 
-        return snapshot.Documents.Select(doc => doc.ConvertTo<RankingEntry>()).ToList();
+            var snapshot = await _db.Collection(COLLECTION_NAME)
+                .OrderByDescending("Score")
+                .OrderByDescending("IsCleared")
+                .OrderBy("ElapsedPlayTime")
+                .Limit(MaxRankCount)
+                .GetSnapshotAsync();
+
+            Debug.Log($"Firestore 쿼리 완료. 총 문서 수: {snapshot.Count}");
+
+            var result = snapshot.Documents.Select(doc =>
+            {
+                Debug.Log($"문서 ID: {doc.Id}, 데이터: {doc.ToDictionary().ToString()}");
+                return doc.ConvertTo<RankingEntry>();
+            }).ToList();
+
+            return result;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Firestore 랭킹 쿼리 실패: {e.Message}");
+            return new List<RankingEntry>();
+        }
     }
 
     public int? GetMyRanking(string myPlayerId)
