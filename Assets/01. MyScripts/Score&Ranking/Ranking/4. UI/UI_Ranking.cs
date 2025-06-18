@@ -27,51 +27,46 @@ public class UI_Ranking : MonoBehaviour
         }
     }
 
-    //private void OnRankingUpdated()
-    //{
-    //    var rankingList = RankingManager.Instance.GetTopRankings();
-    //    var myRank = RankingManager.Instance.GetMyRanking(GameManager.Instance.PlayerId);
-
-    //    // 변환: RankingEntry → RankingDataSO (또는 임시 구조체 사용)
-    //    var rankingDataList = new List<RankingDataSO>();
-    //    for (int i = 0; i < rankingList.Count; i++)
-    //    {
-    //        var entry = rankingList[i];
-    //        rankingDataList.Add(new RankingDataSO
-    //        {
-    //            Rank = i + 1,
-    //            PlayerName = entry.PlayerName,
-    //            Score = entry.Score
-    //        });
-    //    }
-
-    //    var myEntry = rankingList.FirstOrDefault(e => e.PlayerId == GameManager.Instance.PlayerId);
-    //    var myData = new RankingDataSO
-    //    {
-    //        Rank = myRank ?? -1,
-    //        PlayerName = myEntry?.PlayerName ?? "Unknown",
-    //        Score = myEntry?.Score ?? 0
-    //    };
-
-    //    UpdateRanking(rankingDataList, myData);
-    //}
-
     private void OnRankingUpdated()
     {
         var rankingList = RankingManager.Instance.GetTopRankings();
-        var myRank = RankingManager.Instance.GetMyRanking("");
+        var playerID = ScoreManager.Instance.PlayerId;
+        var myRank = RankingManager.Instance.GetMyRanking(playerID);
 
         // 랭킹 리스트와 내 랭킹을 가져옵니다.
         for (int i = 0; i < entryUIList.Count; i++)
         {
-            entryUIList[i].SetData((i + 1).ToString(), rankingList[i].Nickname, rankingList[i].Score.ToString());
+            //entryUIList[i].SetData((i + 1).ToString(), rankingList[i].Nickname, rankingList[i].Score.ToString());
+            if (i < rankingList.Count)
+            {
+                var entry = rankingList[i];
+                entryUIList[i].SetData((i + 1).ToString(), entry.Nickname, entry.Score.ToString());
+            }
+            else
+            {
+                entryUIList[i].SetData("-", "-", "-");
+            }
+
+            if (myRank.HasValue)
+            {
+                var myEntry = rankingList.Find(e => e.PlayerId == playerID);
+                if (myEntry != null)
+                {
+                    myScoreUI.SetData(myRank.Value.ToString(), myEntry.Nickname, myEntry.Score.ToString());
+                }
+                else
+                {
+                    var nickname = AccountManager.Instance?.GetNicknameByPlayerId(playerID) ?? "Unknown";
+                    var score = ScoreManager.Instance.CurrentScore?.Highscore ?? 0;
+                    myScoreUI.SetData(myRank.Value.ToString(), nickname, score.ToString());
+                }
+            }
+            else
+            {
+                myScoreUI.SetData("-", "-", "-");
+            }
+
         }
-
-        if (myRank.HasValue)
-        {
-
-        }
-
     }
 
     public void Show()
