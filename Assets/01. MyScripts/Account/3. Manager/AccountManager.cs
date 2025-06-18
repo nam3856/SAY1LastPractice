@@ -73,4 +73,9 @@ public class AccountManager : MonoBehaviour
         var nickname = saveData != null ? saveData.Nickname : "Unknown";
         return nickname;
     }
+
+    public string GetMyEmail()
+    {
+        return _myAccount?.Email ?? string.Empty;
+    }
 }

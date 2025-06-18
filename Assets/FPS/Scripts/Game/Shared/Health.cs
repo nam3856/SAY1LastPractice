@@ -21,14 +21,24 @@ namespace Unity.FPS.Game
         public float GetRatio() => CurrentHealth / MaxHealth;
         public bool IsCritical() => GetRatio() <= CriticalHealthRatio;
 
+
         bool m_IsDead;
 
         void OnEnable()
         {
             CurrentHealth = MaxHealth;
             m_IsDead = false;
+            EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
+        }
+        public void OnDisable()
+        {
+            EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
         }
 
+        public void OnAllObjectivesCompleted(AllObjectivesCompletedEvent evt)
+        {
+            Invincible = true;
+        }
         public void Heal(float healAmount)
         {
             float healthBefore = CurrentHealth;

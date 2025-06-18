@@ -16,4 +16,13 @@ public class RankingEntry
         IsCleared = dto.IsCleared;
         ElapsedPlayTime = dto.ElapsedPlayTime;
     }
+
+    public RankingEntry( int score, string playerId, string nickname, bool isCleared, float elapsedPlayTime)
+    {
+        PlayerId = playerId;
+        Nickname = nickname;
+        Score = score;
+        IsCleared = isCleared;
+        ElapsedPlayTime = elapsedPlayTime;
+    }
 }
