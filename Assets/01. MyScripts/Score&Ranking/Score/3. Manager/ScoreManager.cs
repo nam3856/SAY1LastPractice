@@ -41,7 +41,6 @@ public class ScoreManager : MonoBehaviour
             throw new System.InvalidOperationException("CurrentScore is not initialized.");
         }
         CurrentScore.OnHighScoreUpdated += HandleHighScoreUpdated;
-
         GameManager.Instance.Events.Session.OnSessionEnded += HandleSessionEnded;
     }
     private void OnDestroy()
@@ -65,6 +64,7 @@ public class ScoreManager : MonoBehaviour
         SetElapsedPlayTime(sessionDTO.ElapsedPlayTime);
         if (UpdateHighScore())
         {
+            
             GameManager.Instance.Events.Score.RaiseHighScoreUpdated(CurrentScore.ToDTO());
         }
         else

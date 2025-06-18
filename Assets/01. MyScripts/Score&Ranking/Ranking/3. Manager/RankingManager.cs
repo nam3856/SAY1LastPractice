@@ -1,13 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Firebase.Firestore;
+using System.Threading.Tasks;
 
 public class RankingManager : MonoBehaviour
 {
     public static RankingManager Instance { get; private set; }
     private List<RankingEntry> _rankingList;
-
+    private const string COLLECTION_NAME = "rankings";
     public int MaxRankCount = 10;
+
+    private FirestoreRankingUploader _firestoreRankingUploader;
+    private FirebaseFirestore _db;
+
 
     private void Awake()
     {
@@ -35,14 +41,15 @@ public class RankingManager : MonoBehaviour
 
         GameManager.Instance.Events.Score.OnHighScoreUpdated += HandleHighScoreUpdated;
         GameManager.Instance.Events.Score.OnScoreCalculateFinished += OnRankingSortComplete;
-        
+        _db = FirebaseFirestore.DefaultInstance;
+        _firestoreRankingUploader = new();
         //초기 정렬
         _rankingList = _rankingList
-            .OrderByDescending(e => e.Score)
-            .ThenByDescending(e => e.IsCleared)
-            .ThenBy(e => e.ElapsedPlayTime)
-            .Take(MaxRankCount)
-            .ToList();
+                .OrderByDescending(e => e.Score)
+                .ThenByDescending(e => e.IsCleared)
+                .ThenBy(e => e.ElapsedPlayTime)
+                .Take(MaxRankCount)
+                .ToList();
 
     }
     private void OnDestroy()
@@ -68,30 +75,23 @@ public class RankingManager : MonoBehaviour
         // 랭킹에 추가 시도
         TryAddRanking(scoreDTO);
     }
-    public void TryAddRanking(ScoreDTO dto)
+    public async void TryAddRanking(ScoreDTO dto)
     {
-        var newEntry = new RankingEntry(dto);
-
-        // 기존 동일 플레이어 있으면 제거
-        _rankingList.RemoveAll(e => e.PlayerId == dto.PlayerId);
-        _rankingList.Add(newEntry);
-
-        // 정렬 기준 적용
-        _rankingList = _rankingList
-            .OrderByDescending(e => e.Score)
-            .ThenByDescending(e => e.IsCleared)
-            .ThenBy(e => e.ElapsedPlayTime)
-            .Take(MaxRankCount)
-            .ToList();
-
-        GameManager.Instance.SaveManager.SaveRankingData();
+        await _firestoreRankingUploader.UploadIfHighScoreAsync(dto);
 
         OnRankingSortComplete(dto);
     }
 
-    public List<RankingEntry> GetTopRankings()
+    public async Task<List<RankingEntry>> GetTopRankings()
     {
-        return _rankingList;
+        var snapshot = await _db.Collection(COLLECTION_NAME)
+        .OrderByDescending("Score")
+        .OrderByDescending("IsCleared")
+        .OrderBy("ElapsedPlayTime")
+        .Limit(MaxRankCount)
+        .GetSnapshotAsync();
+
+        return snapshot.Documents.Select(doc => doc.ConvertTo<RankingEntry>()).ToList();
     }
 
     public int? GetMyRanking(string myPlayerId)

@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
         SaveManager.LoadAchievementData();
         SaveManager.LoadAttendanceData();
         SaveManager.LoadScoreData();
-        SaveManager.LoadRankingData();
     }
     public void SaveRequested()
     {
@@ -51,14 +50,9 @@ public class GameManager : MonoBehaviour
         SaveManager.SaveCurrencyData();
         SaveManager.SaveAchievementData();
         SaveManager.SaveAttendanceData();
-        SaveManager.SaveRankingData();
         SaveManager.SaveScoreData();
     }
 
-    public void RankingSaveRequested()
-    {
-        SaveManager.SaveRankingData();
-    }
 
     public void ScoreSaveRequested()
     {

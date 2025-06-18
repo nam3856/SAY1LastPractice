@@ -42,25 +42,30 @@ public class UI_Ranking : MonoBehaviour
         }
     }
 
-    private void OnRankingUpdated()
+    public async void OnRankingUpdated()
     {
+        var topRankings = await RankingManager.Instance.GetTopRankings();
+
         int index = 1;
-        var rankingList = RankingManager.Instance.GetTopRankings();
-        foreach ( var ranking in rankingList)
+        foreach (var ranking in topRankings)
         {
+            if (index - 1 >= entryUIList.Count)
+                break;
+
             entryUIList[index - 1].SetData(index.ToString(), ranking.Nickname, ranking.Score.ToString("N0"));
             index++;
         }
-        var myData = RankingManager.Instance.GetMyRanking(AccountManager.Instance?.GetMyEmail()??"");
-        if (myData.HasValue)
+
+        string myId = AccountManager.Instance?.GetMyEmail() ?? "";
+        var myRankIndex = topRankings.FindIndex(e => e.PlayerId == myId);
+        if (myRankIndex != -1)
         {
-            Debug.Log($"내 순위: {myData} , 이름:  {AccountManager.Instance?.GetMyNickname()??""}, 점수: {ScoreManager.Instance.CurrentScore.Currentscore}");
+            Debug.Log($"내 순위: {myRankIndex + 1}, 이름: {AccountManager.Instance?.GetMyNickname() ?? ""}, 최고점수: {ScoreManager.Instance.CurrentScore.Highscore}");
         }
         else
         {
-            Debug.Log("순위안에 들지 못했습니다.");
+            Debug.Log("순위 안에 들지 못했습니다.");
         }
-        //RankingManager.Instance.OnRankingUpdated += UpdateRanking;
     }
 
     public void Show(System.Action onClosedCallback)

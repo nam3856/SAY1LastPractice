@@ -87,24 +87,24 @@ public class SaveManager
         }
     }
 
-    public void SaveRankingData()
-    {
-        var rankingList = RankingManager.Instance.GetTopRankings();
-        _rankingRepository.Save(rankingList);
-    }
+    //public void SaveRankingData()
+    //{
+    //    var rankingList = RankingManager.Instance.GetTopRankings();
+    //    _rankingRepository.Save(rankingList);
+    //}
 
-    public void LoadRankingData()
-    {
-        var rankingList = _rankingRepository.Load();
-        if (rankingList == null||rankingList.Count > 0)
-        {
-            RankingManager.Instance.Initialize(rankingList);
-            Debug.Log("랭킹 데이터 로드 완료");
-        }
-        else
-        {
-            RankingManager.Instance.Initialize();
-            Debug.Log("랭킹 데이터가 없습니다. 초기화합니다.");
-        }
-    }
+    //public void LoadRankingData()
+    //{
+    //    var rankingList = _rankingRepository.Load();
+    //    if (rankingList == null||rankingList.Count > 0)
+    //    {
+    //        RankingManager.Instance.Initialize(rankingList);
+    //        Debug.Log("랭킹 데이터 로드 완료");
+    //    }
+    //    else
+    //    {
+    //        RankingManager.Instance.Initialize();
+    //        Debug.Log("랭킹 데이터가 없습니다. 초기화합니다.");
+    //    }
+    //}
 }
