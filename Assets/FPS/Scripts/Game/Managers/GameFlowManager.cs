@@ -55,6 +55,7 @@ namespace Unity.FPS.Game
         {
             if (GameIsEnding)
             {
+                
                 float timeRatio = 1 - (m_TimeLoadEndGameScene - Time.time) / EndSceneLoadDelay;
                 EndGameFadeCanvasGroup.alpha = timeRatio;
                 AudioUtility.SetMasterVolume(1 - timeRatio);
@@ -64,7 +65,8 @@ namespace Unity.FPS.Game
                     if (!_hasShownRankingUI)
                     {
                         // 페이드 끝나면 랭킹 UI 띄우고 대기
-                        //RankingUI.Instance.Show(OnRankingClosed);
+                        UI_Ranking.Instance.Show(OnRankingClosed);
+                        Time.timeScale = 0;
                         _hasShownRankingUI = true;
                         _shouldLoadSceneAfterRanking = true;
                         GameIsEnding = false; // 씬 이동 대기 상태로 전환
@@ -77,6 +79,7 @@ namespace Unity.FPS.Game
         {
             if (_shouldLoadSceneAfterRanking)
             {
+                Time.timeScale = 1;
                 SceneManager.LoadScene(m_SceneToLoad);
                 _shouldLoadSceneAfterRanking = false;
             }
@@ -96,7 +99,7 @@ namespace Unity.FPS.Game
             if (win)
             {
                 m_SceneToLoad = WinSceneName;
-                m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay;
+                m_TimeLoadEndGameScene = Time.time + EndSceneLoadDelay + DelayBeforeFadeToBlack;
 
                 // play a sound on win
                 var audioSource = gameObject.AddComponent<AudioSource>();

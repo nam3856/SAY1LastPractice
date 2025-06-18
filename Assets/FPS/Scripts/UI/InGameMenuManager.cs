@@ -77,6 +77,12 @@ namespace Unity.FPS.UI
 
         void Update()
         {
+            if (Time.timeScale==0)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return;
+            }
             // Lock cursor when clicking outside of menu
             if (!MenuRoot.activeSelf && Input.GetMouseButtonDown(0) && _achievementCanvasGroup.alpha == 0 && _attendanceCanvasGroup.alpha == 0)
             {
@@ -89,6 +95,7 @@ namespace Unity.FPS.UI
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
+
 
             if (Input.GetButtonDown(GameConstants.k_ButtonNamePauseMenu)
                 || (MenuRoot.activeSelf && Input.GetButtonDown(GameConstants.k_ButtonNameCancel)))
