@@ -74,3 +74,6 @@ crashlytics-build.properties
 Assets/google-services.json
 Assets/StreamingAssets/google-services-desktop.json
 Assets/StreamingAssets/google-services-desktop.json.meta
+Assets/10. Fonts/NanumGothic SDF.asset
+Assets/10. Fonts/NanumGothicBold SDF.asset
+Assets/10. Fonts/NanumGothicExtraBold SDF.asset
