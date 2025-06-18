@@ -8,7 +8,7 @@ public class AttendanceRepository
     private const string REWARD_SAVE_KEY = "AttendanceRewardDTOList";
 
     // 출석 정보 저장
-    public void SaveAttendance(AttendanceDTO attendanceDTO)
+    public void SaveAttendance(AttendanceDTO attendanceDTO, string id)
     {
         AttendanceSaveData saveData = new AttendanceSaveData
         {
@@ -16,7 +16,7 @@ public class AttendanceRepository
             LastAttendanceDate = attendanceDTO.LastAttendanceDate.ToString("o")
         };
         string json = JsonUtility.ToJson(saveData);
-        PlayerPrefs.SetString(ATTENDANCE_SAVE_KEY, json);
+        PlayerPrefs.SetString(ATTENDANCE_SAVE_KEY + "_" + id, json);
         PlayerPrefs.Save();
     }
 
@@ -39,12 +39,12 @@ public class AttendanceRepository
     }
 
     // 출석 정보 로드
-    public AttendanceDTO LoadAttendance()
+    public AttendanceDTO LoadAttendance(string id)
     {
-        if (!PlayerPrefs.HasKey(ATTENDANCE_SAVE_KEY))
+        if (!PlayerPrefs.HasKey(ATTENDANCE_SAVE_KEY + "_" + id))
             return null;
 
-        string json = PlayerPrefs.GetString(ATTENDANCE_SAVE_KEY);
+        string json = PlayerPrefs.GetString(ATTENDANCE_SAVE_KEY + "_" + id);
         AttendanceSaveData saveData = JsonUtility.FromJson<AttendanceSaveData>(json);
         DateTime savedDateTime = string.IsNullOrEmpty(saveData.LastAttendanceDate) ? DateTime.MinValue : DateTime.Parse(saveData.LastAttendanceDate);
         return new AttendanceDTO(saveData.TotalAttendanceDays, savedDateTime);
@@ -74,11 +74,11 @@ public class AttendanceRepository
     }
 
     // 출석 정보와 슬롯 정보를 한 번에 반환
-    public AttendanceDataBundle LoadAll()
+    public AttendanceDataBundle LoadAll(string id)
     {
         return new AttendanceDataBundle
         {
-            AttendanceDTO = LoadAttendance(),
+            AttendanceDTO = LoadAttendance(id),
             Rewards = LoadRewards()
         };
     }

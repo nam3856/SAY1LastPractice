@@ -12,10 +12,26 @@ public class UI_Ranking : MonoBehaviour
     [SerializeField] private Transform entryContainer;
     [SerializeField] private List<UI_RankingEntry> entryUIList = new List<UI_RankingEntry>();
     [SerializeField] private UI_RankingEntry myScoreUI;
-
+    public static UI_Ranking Instance { get; private set; }
+    private System.Action _onClosed;
+    [SerializeField] private CanvasGroup canvasGroup;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
         GameManager.Instance.Events.Ranking.OnRankingUpdated += OnRankingUpdated;
+
+        InitEmptyRanking();
     }
 
     void OnDestroy()
@@ -28,8 +44,39 @@ public class UI_Ranking : MonoBehaviour
 
     private void OnRankingUpdated()
     {
-        InitEmptyRanking();
+        int index = 1;
+        var rankingList = RankingManager.Instance.GetTopRankings();
+        foreach ( var ranking in rankingList)
+        {
+            entryUIList[index - 1].SetData(index.ToString(), ranking.Nickname, ranking.Score.ToString("N0"));
+            index++;
+        }
+        var myData = RankingManager.Instance.GetMyRanking(AccountManager.Instance?.GetMyEmail()??"");
+        if (myData.HasValue)
+        {
+            Debug.Log($"내 순위: {myData} , 이름:  {AccountManager.Instance?.GetMyNickname()??""}, 점수: {ScoreManager.Instance.CurrentScore.Currentscore}");
+        }
+        else
+        {
+            Debug.Log("순위안에 들지 못했습니다.");
+        }
         //RankingManager.Instance.OnRankingUpdated += UpdateRanking;
+    }
+
+    public void Show(System.Action onClosedCallback)
+    {
+        _onClosed = onClosedCallback;
+        canvasGroup.alpha = 1f; // UI 활성화
+        canvasGroup.interactable = true; // UI 상호작용 가능
+        canvasGroup.blocksRaycasts = true; // UI 블록 레이캐스트 가능
+    }
+
+    public void Close()
+    {
+        canvasGroup.alpha = 0f;
+        canvasGroup.interactable = false; // UI 상호작용 불가능
+        canvasGroup.blocksRaycasts = false; // UI 블록 레이캐스트 불가능
+        _onClosed?.Invoke();         // 콜백 실행
     }
 
     private void InitEmptyRanking()

@@ -35,6 +35,15 @@ public class RankingManager : MonoBehaviour
 
         GameManager.Instance.Events.Score.OnHighScoreUpdated += HandleHighScoreUpdated;
         GameManager.Instance.Events.Score.OnScoreCalculateFinished += OnRankingSortComplete;
+        
+        //초기 정렬
+        _rankingList = _rankingList
+            .OrderByDescending(e => e.Score)
+            .ThenByDescending(e => e.IsCleared)
+            .ThenBy(e => e.ElapsedPlayTime)
+            .Take(MaxRankCount)
+            .ToList();
+
     }
     private void OnDestroy()
     {

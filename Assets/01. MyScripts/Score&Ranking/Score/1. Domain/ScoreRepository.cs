@@ -34,7 +34,6 @@ public class ScoreRepository
             Debug.LogWarning("Invalid score data loaded: " + json);
             return null;
         }
-
         return new ScoreDTO(saveData);
     }
 }

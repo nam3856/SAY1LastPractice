@@ -14,6 +14,7 @@
             throw new System.ArgumentNullException(nameof(score), "Score cannot be null.");
         }
         PlayerId = score.PlayerId;
+        Nickname = AccountManager.Instance?.GetNicknameByPlayerId(PlayerId) ?? "Unknown";
         Currentscore = score.Currentscore;
         Highscore = score.Highscore;
         IsCleared = score.IsCleared;

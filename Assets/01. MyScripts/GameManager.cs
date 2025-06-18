@@ -64,4 +64,9 @@ public class GameManager : MonoBehaviour
     {
         SaveManager.SaveScoreData();
     }
+
+    public void AttendanceSaveRequested()
+    {
+        SaveManager.SaveAttendanceData();
+    }
 }

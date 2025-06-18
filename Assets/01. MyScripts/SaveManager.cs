@@ -40,7 +40,7 @@ public class SaveManager
 
     public void LoadAttendanceData()
     {
-        var dataBundle = _attendanceRepository.LoadAll();
+        var dataBundle = _attendanceRepository.LoadAll(_accountID);
 
         var savedSlots = dataBundle.Rewards;
         var savedAttendance = dataBundle.AttendanceDTO;
@@ -62,7 +62,7 @@ public class SaveManager
     {
         var slotsData = AttendanceManager.Instance.GetAttendanceSlotDTOs();
         var attendanceData = AttendanceManager.Instance.GetCurrentAttendanceDTO();
-        _attendanceRepository.SaveAttendance(attendanceData);
+        _attendanceRepository.SaveAttendance(attendanceData, _accountID);
         _attendanceRepository.SaveRewards(slotsData);
     }
 

@@ -74,6 +74,10 @@ public class AccountManager : MonoBehaviour
         return nickname;
     }
 
+    public string GetMyNickname()
+    {
+        return _myAccount?.Nickname ?? string.Empty;
+    }
     public string GetMyEmail()
     {
         return _myAccount?.Email ?? string.Empty;

@@ -51,7 +51,7 @@ public class AttendanceManager : MonoBehaviour
         if (_attendance.RecordAttendance())
         {
             GameManager.Instance.Events.Attendance.RaiseTodayAttendanceChecked(true);
-            GameManager.Instance.SaveRequested();
+            GameManager.Instance.AttendanceSaveRequested();
         }
         else
         {

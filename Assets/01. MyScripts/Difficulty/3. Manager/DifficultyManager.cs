@@ -96,22 +96,6 @@ public class DifficultyManager : MonoBehaviour
     {
         if (_difficulty == null) return;
 
-        GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = 20,
-            normal = { textColor = Color.white }
-        };
-
-        float elapsed = _difficulty.ToDTO().CurrentElapsedTime;
-        float coefficient = _difficulty.ToDTO().CurrentCoefficient;
-        string tierName = _difficulty.ToDTO().CurrentTierName;
-
-        string message = $"Elapsed Time: {elapsed:F1}s\n" +
-                         $"Coefficient: {coefficient:F2}\n" +
-                         $"Tier: {tierName}";
-
-        GUI.Label(new Rect(20, 500, 400, 100), message, labelStyle);
-        GUI.Button(new Rect(20, 610, 200, 40), "Clear Stage (F5)");
         if (_isStageClearRequested)
         {
             _isStageClearRequested = false;
