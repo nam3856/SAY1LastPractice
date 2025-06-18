@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Unity.FPS.Game
@@ -35,7 +36,8 @@ namespace Unity.FPS.Game
 
         private bool _hasShownRankingUI = false;
         private bool _shouldLoadSceneAfterRanking = false;
-
+        private bool _isRankingUpdated = false;
+        private Action _rankingUpdatedHandler;
         void Awake()
         {
             EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
@@ -45,6 +47,8 @@ namespace Unity.FPS.Game
         void Start()
         {
             AudioUtility.SetMasterVolume(1);
+            _rankingUpdatedHandler = () => _isRankingUpdated = true;
+            GameManager.Instance.Events.Ranking.OnRankingUpdated += _rankingUpdatedHandler;
         }
 
         void Update()
@@ -125,6 +129,7 @@ namespace Unity.FPS.Game
         {
             EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
             EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
+            GameManager.Instance.Events.Ranking.OnRankingUpdated -= _rankingUpdatedHandler;
         }
     }
 }
