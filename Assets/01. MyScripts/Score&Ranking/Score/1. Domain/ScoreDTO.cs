@@ -14,7 +14,7 @@
             throw new System.ArgumentNullException(nameof(score), "Score cannot be null.");
         }
         PlayerId = score.PlayerId;
-        Nickname = AccountManager.Instance?.GetNicknameByPlayerId(PlayerId) ?? "Unknown";
+        Nickname = AccountManager.Instance?.GetMyNickname() ?? "Unknown";
         Currentscore = score.Currentscore;
         Highscore = score.Highscore;
         IsCleared = score.IsCleared;
@@ -28,7 +28,7 @@
         Highscore = scoreSaveModel.Score;
         IsCleared = scoreSaveModel.IsCleared;
         ElapsedPlayTime = scoreSaveModel.ElapsedTime;
-        Nickname = AccountManager.Instance?.GetNicknameByPlayerId(PlayerId)??"Unknown";
+        Nickname = AccountManager.Instance?.GetMyNickname()?? "Unknown";
     }
 
     public Score ToDomain()

@@ -6,9 +6,9 @@ public static class RestartManager
 {
     public static void Restart(string sceneName)
     {
+        DestroySingletons();
         EventManager.Clear();
         SceneManager.LoadScene(sceneName);
-        DestroySingletons();
     }
 
     public static void DestroySingletons()

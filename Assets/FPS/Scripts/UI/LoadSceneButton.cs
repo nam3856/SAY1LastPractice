@@ -20,7 +20,7 @@ namespace Unity.FPS.UI
 
         public void LoadTargetScene()
         {
-            RestartManager.Restart(SceneName);
+            SceneManager.LoadScene(SceneName);
         }
     }
 }

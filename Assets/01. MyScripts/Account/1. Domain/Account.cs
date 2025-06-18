@@ -6,10 +6,9 @@ public class Account
 {
     public readonly string Email;
     public readonly string Nickname;
-    public readonly string Password;
 
 
-    public Account(string email, string nickname, string password)
+    public Account(string email, string nickname)
     {
         // 규칙을 객체로 캡슐화해서 분리한다.
         // 그래서 도메인과 UI는 모두 "이 규칙을 만족하니?" 물으면된다.
@@ -30,21 +29,14 @@ public class Account
             throw new Exception(nickNameSpecification.ErrorMessage);
         }
 
-        // 비밀번호 검증
-        var passwordSpecification = new AccountPasswordSpecification();
-        if (!passwordSpecification.IsSatisfiedBy(password))
-        {
-            throw new Exception(passwordSpecification.ErrorMessage);
-        }
 
         Email = email;
         Nickname = nickname;
-        Password = password;
     }
 
 
     public AccountDTO ToDTO()
     {
-        return new AccountDTO(Email, Nickname, Password);
+        return new AccountDTO(Email, Nickname);
     }
 }

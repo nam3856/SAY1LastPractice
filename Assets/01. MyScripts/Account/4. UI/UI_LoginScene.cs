@@ -59,9 +59,8 @@ public class UI_LoginScene : MonoBehaviour
 
 
     // 회원가입
-    public void Resister()
+    public async void Resister()
     {
-        // 1. 이메일 도메인 규칙을 확인한다.
         string email = RegisterInputFields.EmailInputField.text;
         var emailSpecification = new AccountEmailSpecification();
         if (!emailSpecification.IsSatisfiedBy(email))
@@ -70,7 +69,6 @@ public class UI_LoginScene : MonoBehaviour
             return;
         }
 
-        // 2. 닉네임 도메인 규칙을 확인한다.
         string nickname = RegisterInputFields.NicknameInputField.text;
         var nicknameSpecification = new AccountNicknameSpecification();
         if (!nicknameSpecification.IsSatisfiedBy(nickname))
@@ -79,7 +77,6 @@ public class UI_LoginScene : MonoBehaviour
             return;
         }
 
-        // 2. 1차 비밀번호 입력을 확인한다.
         string password = RegisterInputFields.PasswordInputField.text;
         var passwordSpecification = new AccountPasswordSpecification();
         if (!passwordSpecification.IsSatisfiedBy(password))
@@ -88,35 +85,32 @@ public class UI_LoginScene : MonoBehaviour
             return;
         }
 
-        // 3. 2차 비밀번호 입력을 확인하고, 1차 비밀번호 입력과 같은지 확인한다.
         string password2 = RegisterInputFields.PasswordComfirmInputField.text;
-        if (!passwordSpecification.IsSatisfiedBy(password2))
-        {
-            RegisterInputFields.ResultText.text = passwordSpecification.ErrorMessage;
-            return;
-        }
-
         if (password != password2)
         {
             RegisterInputFields.ResultText.text = "비밀번호가 다릅니다.";
             return;
         }
+        RegisterInputFields.ConfirmButton.interactable = false; // 버튼 비활성화
+        RegisterInputFields.ResultText.text = "회원가입 중... 잠시만 기다려주세요.";
 
-        Result result = AccountManager.Instance.TryRegister(email, nickname, password);
+        var result = await AccountManager.Instance.TryRegisterAsync(email, nickname, password);
         if (result.IsSuccess)
         {
             OnClickGoToLoginButton();
+            RegisterInputFields.ConfirmButton.interactable = true;
         }
         else
         {
             RegisterInputFields.ResultText.text = result.Message;
+
+            RegisterInputFields.ConfirmButton.interactable = true;
         }
     }
 
 
-    public void Login()
+    public async void Login()
     {
-        // 1. 이메일 입력을 확인한다.
         string email = LoginInputFields.EmailInputField.text;
         var emailSpecification = new AccountEmailSpecification();
         if (!emailSpecification.IsSatisfiedBy(email))
@@ -125,7 +119,6 @@ public class UI_LoginScene : MonoBehaviour
             return;
         }
 
-        // 2. 비밀번호 입력을 확인한다.
         string password = LoginInputFields.PasswordInputField.text;
         var passwordSpecification = new AccountPasswordSpecification();
         if (!passwordSpecification.IsSatisfiedBy(password))
@@ -134,7 +127,8 @@ public class UI_LoginScene : MonoBehaviour
             return;
         }
 
-        if (AccountManager.Instance.TryLogin(email, password))
+        bool success = await AccountManager.Instance.TryLoginAsync(email, password);
+        if (success)
         {
             SceneManager.LoadScene(1);
         }
